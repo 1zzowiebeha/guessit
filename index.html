@@ -7,23 +7,27 @@
         
         <link rel="stylesheet" href="static/css/style.css">
         
+        <!-- how do type="module" scripts work? can the be imported from by other scripts here? -->
         <script defer src="static/js/main.js"></script>
         
         <link rel="icon" href="static/assets/favicon.ico">
         <title>Guess the number</title>
     </head>
     <body>
-        <aside id="popover-1" class="notification notification--success" popover="manual">
+        <!-- <aside id="popover-1" class="notification notification--success" popover="manual">
             <p>A something occurred...</p>
             
             <button class="btn btn--popover" popovertarget="popover-1">
                 <span class="sr-only">Close</span>
             </button>
         </aside>
+        
+        remove in production 
         <script>
             const popover = document.getElementById('popover-1');
             popover.showPopover();
         </script>
+        -->
 
         <main>
             <h1>Guess it!</h1>

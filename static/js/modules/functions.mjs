@@ -5,6 +5,8 @@ import { MAX_ATTEMPTS_VALUE } from "./settings.mjs";
 // Shared State //
 //////////////////
 
+const bodyElement = document.getElementsByTagName('body')[0];
+
 let randomNumber;
 let attemptsRemaining;
 let gameRunning;
@@ -23,13 +25,47 @@ function getRandomInteger(max) {
 }
 
 
+function generateUniquePopoverID() {
+    const uid = crypto.randomUUID();
+    
+    return uid.slice(0, 12);
+}
+
 /**
  * Show a popover to the user with the given message.
  * @param {string} message
  * @param {number} state - a popoverState enum index
  */
 function createPopover(message, state) {
-    // todo heehehehe
+    const popoverID = generateUniquePopoverID();
+    
+    // aside
+    const asideElement = document.createElement('aside');
+    asideElement.setAttribute('id', `popover-${popoverID}`);
+    asideElement.classList.add('notification', 'notification--success');
+    asideElement.setAttribute('popover', 'manual');
+    
+    // paragraph
+    const paragraphElement = document.createElement('p');
+    paragraphElement.textContent = message;
+    asideElement.appendChild(paragraphElement);
+    
+    // close (single-use toggle) button 
+    const buttonElement = document.createElement('button');
+    buttonElement.classList.add('btn', 'btn--popover');
+    buttonElement.setAttribute('popovertarget', `popover-${popoverID}`);
+
+    // span
+    const spanElement = document.createElement('span');
+    spanElement.classList.add('sr-only');
+    spanElement.textContent = 'Close';
+    buttonElement.appendChild(spanElement);
+    
+    // add all to body
+    bodyElement.prepend(asideElement);
+    
+    // show it
+    asideElement.showPopover();
 }
 
 
