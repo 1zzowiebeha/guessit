@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+
+<html lang="en-US">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        
+        <link rel="stylesheet" href="static/css/style.css">
+        
+        <script defer src="static/js/main.js"></script>
+        
+        <link rel="icon" href="static/assets/favicon.ico">
+        <title>Guess the number</title>
+    </head>
+    <body>
+        <aside id="popover-1" class="notification notification--success" popover="manual">
+            <p>A something occurred...</p>
+            
+            <button class="btn btn--popover" popovertarget="popover-1">
+                <span class="sr-only">Close</span>
+            </button>
+        </aside>
+        <script>
+            const popover = document.getElementById('popover-1');
+            popover.showPopover();
+        </script>
+
+        <main>
+            <h1>Guess it!</h1>
+            
+            <form id="game-form">
+                <label class="game-form__label" for="guess-input">
+                    Guess a number between 0 and 100:
+                </label>
+                
+                <input id="guess-input" type="number"
+                       pattern="\d+" min="0" max="100"
+                       required name="guessed-number">
+            </form>
+        </main>
+    </body>
+</html>
