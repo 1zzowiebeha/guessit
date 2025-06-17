@@ -1,12 +1,26 @@
-✅ popover function
+✅ Build the popover function
 
-the rest of the popover styles (danger, neutral)
+Complete the rest of the popover styles (danger, neutral)
 
-popover position one on top of the other
+Use CSS to position new popovers above old ones along the screen's y-axis
+    Maybe anchor positioning will help here
 
-popover in and out animations
+Add in and out animations to popover
 
-win/loss condition
+Make new game button appear after win/loss condition
+Add visuals to win/loss condition
 
 ------
-rest of modules page, import page, export page
+read rest of modules page, import page, export page
+
+add a ci/cd pipeline with the following:
+    html doc validation
+    
+    css style guide checks
+    js linting
+    
+    css minification
+    js minification
+    html minification
+    
+    uploads to cloudflare, flyio, or vercel
