@@ -19,6 +19,8 @@ add a ci/cd pipeline with the following:
     css style guide checks
     js linting
     
+    js unit testing
+    
     css minification
     js minification
     html minification
