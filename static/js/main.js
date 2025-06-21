@@ -5,14 +5,13 @@ import { makeGuess, startNewGame } from './modules/functions.mjs';
     // Variables //
     ///////////////
     
-    const MAX_RANDOM_VALUE = numberInputElement.getAttribute('max');
-    
     // Hidden until win / loss:
     const newGameButton = document.getElementById("btn--new-game"); 
     
     const formElement = document.getElementById("game-form"); 
     const numberInputElement = document.getElementById("guess-input");
     
+    const MAX_RANDOM_VALUE = numberInputElement.getAttribute('max');
     
     ////////////////////////
     // Main Functionality //

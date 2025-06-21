@@ -1,4 +1,4 @@
-import { popoverState } from "./enums.mjs";
+import { toastState } from "./enums.mjs";
 import { MAX_ATTEMPTS_VALUE } from "./settings.mjs";
 
 //////////////////
@@ -10,7 +10,8 @@ const bodyElement = document.getElementsByTagName('body')[0];
 let randomNumber;
 let attemptsRemaining;
 let gameRunning;
-    
+
+let popoverArray = [];
 
 ///////////////
 // Functions //
@@ -25,10 +26,23 @@ function getRandomInteger(max) {
 }
 
 
-function generateUniquePopoverID() {
+function generateUniqueToastID() {
     const uid = crypto.randomUUID();
     
     return uid.slice(0, 12);
+}
+
+function removeFromArray(element, array) {
+    let arrayIndex = array.indexOf(element);
+    
+    let leftArray = array.splice(0, arrayIndex + 1);
+    let rightArray = array.splice(arrayIndex, array.length)
+    
+    // 
+    if (leftArray.length == 1) leftArray = null;
+    if (rightArray.length == 1) rightArray = null;
+    
+    return leftArray.concat(rightArray);
 }
 
 /**
@@ -36,13 +50,13 @@ function generateUniquePopoverID() {
  * @param {string} message
  * @param {number} state - a popoverState enum index
  */
-function createPopover(message, state) {
-    const popoverID = generateUniquePopoverID();
+function createToast(message, state) {
+    const popoverID = generateUniqueToastID();
     
     // aside
     const asideElement = document.createElement('aside');
-    asideElement.setAttribute('id', `popover-${popoverID}`);
-    asideElement.classList.add('notification', 'notification--success');
+    asideElement.setAttribute('id', `toast-${popoverID}`);
+    asideElement.classList.add('toast', 'toast--success');
     asideElement.setAttribute('popover', 'manual');
     
     // paragraph
@@ -52,8 +66,8 @@ function createPopover(message, state) {
     
     // close (single-use toggle) button 
     const buttonElement = document.createElement('button');
-    buttonElement.classList.add('btn', 'btn--popover');
-    buttonElement.setAttribute('popovertarget', `popover-${popoverID}`);
+    buttonElement.classList.add('btn', 'btn--toast');
+    buttonElement.setAttribute('popovertarget', `toast-${popoverID}`);
 
     // span
     const spanElement = document.createElement('span');
@@ -63,6 +77,23 @@ function createPopover(message, state) {
     
     // add all to body
     bodyElement.prepend(asideElement);
+    
+    // assign an anchor id for future popovers to position themselves relative to
+    asideElement.style.anchorName = `--anchor-{popoverID}`;
+    
+    if (popoverArray.length > 0) {
+        
+    }
+    popoverArray.add(asideElement);
+    
+    // when the popover is closed, remove it from the list of popovers
+    asideElement.addEventListener('cancel', (event) => {
+        let deletedPopoverAsideElement = event.target;
+        
+        
+        //aasd
+        popoverArray.remove(popoverID);
+    });
     
     // show it
     asideElement.showPopover();
