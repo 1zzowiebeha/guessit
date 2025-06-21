@@ -7,27 +7,30 @@
         
         <link rel="stylesheet" href="static/css/style.css">
         
-        <!-- how do type="module" scripts work? can the be imported from by other scripts here? -->
-        <script defer src="static/js/main.js"></script>
+        <!-- how do type="module" scripts work? can they be imported from by other scripts in the document? -->
+        <!-- why are only modules allowed to import? -->
+        <script type="module" src="static/js/main.js"></script>
         
         <link rel="icon" href="static/assets/favicon.ico">
         <title>Guess the number</title>
     </head>
     <body>
-        <!-- <aside id="popover-1" class="notification notification--success" popover="manual">
-            <p>A something occurred...</p>
-            
-            <button class="btn btn--popover" popovertarget="popover-1">
-                <span class="sr-only">Close</span>
-            </button>
+        <aside id="toast-1" class="toast toast--neutral" popover="manual">
+            <div class="flex-wrapper">
+                <p>A something occurred...</p>
+                
+                <button class="btn btn--toast" popovertarget="toast-1" popovertargetaction="hide">
+                    <span class="sr-only">Close</span>
+                </button>
+            </div>
         </aside>
         
-        remove in production 
+        <!-- remove in production  -->
         <script>
-            const popover = document.getElementById('popover-1');
-            popover.showPopover();
+            const toast = document.getElementById('toast-1');
+            toast.showPopover();
         </script>
-        -->
+       
 
         <main>
             <h1>Guess it!</h1>
@@ -41,6 +44,10 @@
                        pattern="\d+" min="0" max="100"
                        required name="guessed-number">
             </form>
+            
+            <button id="btn--new-game" class="hidden">
+                New game
+            </button>
         </main>
     </body>
 </html>

@@ -51,6 +51,28 @@ body {
   cursor: pointer;
 }
 
+.btn--toast {
+  border-radius: 50%;
+
+  /* fix the size of the button irregardless of its contents */
+  width: 3rem;
+  aspect-ratio: 1 / 1;
+
+  background:
+    no-repeat
+    center / 50% 50%
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='none' stroke='white' stroke-linecap='round' stroke-width='2' d='M20 20L4 4m16 0L4 20'/%3E%3C/svg%3E");
+  
+  background-color: rgb(43, 43, 43);
+  display: grid;
+  grid: 100% / 100%;
+  place-items: center; /* why do the default grid tracks not fill to 100%? */
+  
+  &:hover {
+    background-color: rgb(14, 13, 13);
+  }
+}
+
 /* =======
 Popovers
 ========== */
@@ -59,7 +81,7 @@ Popovers
   display: none;
 }
 
-.notification {
+.toast {
   border: none;
   border-radius: 6px;
   padding: 1rem 1rem;
@@ -71,58 +93,64 @@ Popovers
   right: 1rem;
   bottom: 1rem;
   
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-  
-  .btn--popover {
-    border-radius: 50%;
-
-    /* fix the size of the button irregardless of its contents */
-    width: 3rem;
-    aspect-ratio: 1 / 1;
-  
-    padding: 1rem 1rem;
-    background-color: rgb(22, 21, 21);
-    display: grid;
-    grid: 100% / 100%;
-    place-items: center; /* why do the default grid tracks not fill to 100%? */
-    
-    &:hover {
-      background-color: rgb(14, 13, 13);
-    }
-    
-    &::after {
-      content: "X";
-      display: block;
-      color: white;
-    }
+  /* popover behavior alters the display property,
+  so we need a wrapper otherwise the element's functionality will break if display isn't none or block (i think). */
+  .flex-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
   }
 }
 
-.notification--success {
+.toast--success {
   border: 2px solid rgb(144, 182, 144);
   background: rgb(235, 249, 235);
   overflow: hidden; /* don't scroll to accomodate rotated ::before icon */
   
   &::before {
     content: "";
-    position: block;
     z-index: -1; /* display behind the text within the popover */
     left: 0rem;
     height: 3rem;
     aspect-ratio: 1 / 1;
     
     background-color: rgb(165, 208, 165);
-    mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cpath fill='%23000' d='m14 21.414l-5-5.001L10.413 15L14 18.586L21.585 11L23 12.415z'/%3E%3Cpath fill='%23000' d='M16 2a14 14 0 1 0 14 14A14 14 0 0 0 16 2m0 26a12 12 0 1 1 12-12a12 12 0 0 1-12 12'/%3E%3C/svg%3E");
-  
+    /* svgs aren't 100% of height and width */
+    mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 0 0'%3E%3Cpath fill='%23000' d='m14 21.414l-5-5.001L10.413 15L14 18.586L21.585 11L23 12.415z'/%3E%3Cpath fill='%23000' d='M16 2a14 14 0 1 0 14 14A14 14 0 0 0 16 2m0 26a12 12 0 1 1 12-12a12 12 0 0 1-12 12'/%3E%3C/svg%3E");
   }
+}
+
+.toast--danger {
+  border: 2px solid rgb(182, 145, 144);
+  background: rgb(249, 235, 235);
+  overflow: hidden; /* don't scroll to accomodate rotated ::before icon */
   
-  .btn--popover {
-    background-color: rgb(49, 69, 49);
-    &::after {
-      color: rgb(255, 255, 255);
-    }
+  &::before {
+    content: "";
+    z-index: -1; /* display behind the text within the popover */
+    left: 0rem;
+    height: 3rem;
+    aspect-ratio: 1 / 1;
+    
+    background-color: rgb(217, 119, 119);
+    mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='%23c53a3a' d='M12 4c-4.42 0-8 3.58-8 8s3.58 8 8 8s8-3.58 8-8s-3.58-8-8-8m1 13h-2v-2h2zm0-4h-2V7h2z' opacity='0.3'/%3E%3Cpath fill='%23c53a3a' d='M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2M12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8s8 3.58 8 8s-3.58 8-8 8m-1-5h2v2h-2zm0-8h2v6h-2z'/%3E%3C/svg%3E");
+  }
+}
+
+.notification--neutral {
+  border: 2px solid hsl(0, 0%, 64%);
+  background: hsl(0, 0%, 95%);
+  overflow: hidden; /* don't scroll to accomodate rotated ::before icon */
+  
+  &::before {
+    content: "";
+    z-index: -1; /* display behind the text within the popover */
+    left: 0rem;
+    height: 3rem;
+    aspect-ratio: 1 / 1;
+    
+    background-color: hsl(0, 0%, 66%);
+    mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='%23000' d='M12 4c-4.41 0-8 3.59-8 8s3.59 8 8 8s8-3.59 8-8s-3.59-8-8-8m1 13h-2v-6h2zm0-8h-2V7h2z' opacity='0.3'/%3E%3Cpath fill='%23000' d='M11 7h2v2h-2zm0 4h2v6h-2zm1-9C6.48 2 2 6.48 2 12s4.48 10 10 10s10-4.48 10-10S17.52 2 12 2m0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8s8 3.59 8 8s-3.59 8-8 8'/%3E%3C/svg%3E");
   }
 }
 
@@ -133,4 +161,8 @@ Utilities
 .sr-only {
   position: absolute;
   left: -99999px;
+}
+
+.hidden {
+  display: none;
 }
