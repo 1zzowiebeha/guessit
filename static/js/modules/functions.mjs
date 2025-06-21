@@ -33,16 +33,41 @@ function generateUniqueToastID() {
 }
 
 function removeFromArray(element, array) {
-    let arrayIndex = array.indexOf(element);
+    let elementIndex = array.indexOf(element);
     
-    let leftArray = array.splice(0, arrayIndex + 1);
-    let rightArray = array.splice(arrayIndex, array.length)
+    // retrieve portions of the array that don't include the element to be removed
+    let leftArray = array.splice(0, elementIndex + 1);
+    let rightArray = array.splice(elementIndex + 1, array.length)
     
-    // 
+    // if element was the first or last element of the array, it will be spliced into
+    // its own array. don't include it in the final result.
     if (leftArray.length == 1) leftArray = null;
     if (rightArray.length == 1) rightArray = null;
     
     return leftArray.concat(rightArray);
+}
+
+function reorderPopoverPositions() {
+    debugger;
+    for (let i = 0; i < popoverArray.length; i++) {
+        const previousElement = popoverArray[i - 1];
+        const currentElement = popoverArray[i];
+        if (previousElement !== undefined) {
+            // Popovers after the first popover will use anchor positioning instead
+            // of absolute. They will also use a transform for a slight gap between them.
+            currentElement.style.position = "static";
+            // currentElement.style.position = "static";
+            
+            // how2 animate position changes for anchors
+            
+            // Position current popover relative to previous popover
+            const previousAnchorName = previousElement.style.anchorName;
+            // correct style keys for these css properties
+            currentElement.style.positionAnchor = previousAnchorName;
+            currentElement.style.insetBlockEnd = `achor(${previousAnchorName} bottom)`;
+            currentElement.style.insetInlineStart = `achor(${previousAnchorName} left)`;
+        }
+    }
 }
 
 /**
@@ -50,53 +75,50 @@ function removeFromArray(element, array) {
  * @param {string} message
  * @param {number} state - a popoverState enum index
  */
-function createToast(message, state) {
+function createToast(message, toastState) {
     const popoverID = generateUniqueToastID();
     
-    // aside
-    const asideElement = document.createElement('aside');
-    asideElement.setAttribute('id', `toast-${popoverID}`);
-    asideElement.classList.add('toast', 'toast--success');
-    asideElement.setAttribute('popover', 'manual');
+    //// (old method) why must we give it a parent before we can set outerHTML?
     
-    // paragraph
-    const paragraphElement = document.createElement('p');
-    paragraphElement.textContent = message;
-    asideElement.appendChild(paragraphElement);
+    // templates do permit block display elements to be placed within inline display elements.
+    // it isn't completely HTML5 compliant.
+    const template = document.createElement('template');
+    const toastComponent = `
+        <aside id="toast-${popoverID}" class="toast ${toastState}" style="anchor-name: --anchor-${popoverID}" popover="manual">
+            <div class="flex-wrapper">
+                <p>${message}.</p>
+                
+                <button class="btn btn--toast" popovertarget="toast-${popoverID}" popovertargetaction="hide">
+                    <span class="sr-only">Close</span>
+                </button>
+            </div>
+        </aside>
+    `;
     
-    // close (single-use toggle) button 
-    const buttonElement = document.createElement('button');
-    buttonElement.classList.add('btn', 'btn--toast');
-    buttonElement.setAttribute('popovertarget', `toast-${popoverID}`);
+    // remove whitespace text nodes to prevent them from being assigned to the firstChild value.
+    template.innerHTML = toastComponent.trim();
+    
+    // thank God for this
+    const toastAsideElement = template.content.firstChild;
+    
+    bodyElement.prepend(toastAsideElement);
+    
+    // add to array for re-ordering
+    popoverArray.push(toastAsideElement);
 
-    // span
-    const spanElement = document.createElement('span');
-    spanElement.classList.add('sr-only');
-    spanElement.textContent = 'Close';
-    buttonElement.appendChild(spanElement);
-    
-    // add all to body
-    bodyElement.prepend(asideElement);
-    
-    // assign an anchor id for future popovers to position themselves relative to
-    asideElement.style.anchorName = `--anchor-{popoverID}`;
-    
-    if (popoverArray.length > 0) {
+    // when the toast is closed, remove it from the array of toasts
+    toastAsideElement.addEventListener('cancel', (event) => {
+        const closedToastElement = event.target;
         
-    }
-    popoverArray.add(asideElement);
-    
-    // when the popover is closed, remove it from the list of popovers
-    asideElement.addEventListener('cancel', (event) => {
-        let deletedPopoverAsideElement = event.target;
-        
-        
-        //aasd
-        popoverArray.remove(popoverID);
+        removeFromArray(closedToastElement, popoverArray);
+        reorderPopoverPositions();
     });
     
+    // position the new popover in relation to its siblings
+    reorderPopoverPositions();
+    
     // show it
-    asideElement.showPopover();
+    toastAsideElement.showPopover();
 }
 
 
@@ -122,33 +144,36 @@ function triggerLoss() {
 }
 
 
-function makeGuess(value) {    
+function makeGuess(value) {   
     if (!gameRunning)
         throw Error("makeGuess was called while the game wasn't running.");
     
     if (attemptsRemaining == 0) {
-        createPopover("Max attempts reached", popoverState.DANGER);
+        createToast("Max attempts reached", toastState.DANGER);
         triggerLoss();
     }
     
     if (value > randomNumber) {
-        createPopover(
+        createToast(
             `Number too high. ${attemptsRemaining} attempts remain`,
-            popoverState.NEUTRAL
+            toastState.NEUTRAL
         );
         
         attemptsRemaining--;
     }
     else if (value < randomNumber) {
-        createPopover(
+        createToast(
             `Number too low. ${attemptsRemaining} attempts remain`,
-            popoverState.NEUTRAL
+            toastState.NEUTRAL
         );
         
         attemptsRemaining--;    
     }
-    else {
-        createPopover(`Success! The number was ${randomNumber}`, popoverState.SUCCESS);
+    else if (value == randomNumber) {
+        createToast(
+            `Success! The number was ${randomNumber}`,
+            toastState.SUCCESS
+        );
         triggerWin();
     }
 }

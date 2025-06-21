@@ -31,18 +31,22 @@ import { makeGuess, startNewGame } from './modules/functions.mjs';
     
     formElement.addEventListener('submit', (event) => {
         event.preventDefault(); // no GET request
-        
+
         const formData = new FormData(formElement);
         
-        if (numberInputElement.getAttribute("name") === null)
+        // "guessed-number"
+        const numberInputName = numberInputElement.getAttribute("name");
+        
+        // type checkmight break
+        if (numberInputName === null)
             throw new Error(JSON.stringify(numberInputElement) + " must have 'name' attribute.");
         
-        if (numberInputElement.getAttribute("name") in formData.keys()) {
-            const numberInputValue = formData[numberInputElement.getAttribute("name")];
+        if (formData.has(numberInputName)) {
+            const numberInputValue = formData.get(numberInputName);
             
-            if (numberInputElement > 100)
+            if (numberInputValue > 100)
                 throw new Error("User tampered with input field. Input value is greater than 100.");
-            else if (numberInputElement < 0)
+            else if (numberInputValue < 0)
                 throw new Error("User tampered with input field. Input value is less than 0.");
             
             makeGuess(numberInputValue);
