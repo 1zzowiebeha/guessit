@@ -32,40 +32,48 @@ function generateUniqueToastID() {
     return uid.slice(0, 12);
 }
 
-function removeFromArray(element, array) {
+function arrayWithoutElement(element, array) {
     let elementIndex = array.indexOf(element);
     
-    // retrieve portions of the array that don't include the element to be removed
-    let leftArray = array.splice(0, elementIndex + 1);
-    let rightArray = array.splice(elementIndex + 1, array.length)
-    
-    // if element was the first or last element of the array, it will be spliced into
-    // its own array. don't include it in the final result.
-    if (leftArray.length == 1) leftArray = null;
-    if (rightArray.length == 1) rightArray = null;
+    // Retrieve sections of the array to the left & right of the element.
+    let leftArray = array.slice(0, elementIndex);
+    let rightArray = array.slice(elementIndex + 1, array.length)
     
     return leftArray.concat(rightArray);
 }
 
 function reorderPopoverPositions() {
-    debugger;
     for (let i = 0; i < popoverArray.length; i++) {
         const previousElement = popoverArray[i - 1];
         const currentElement = popoverArray[i];
+        
         if (previousElement !== undefined) {
-            // Popovers after the first popover will use anchor positioning instead
-            // of absolute. They will also use a transform for a slight gap between them.
-            currentElement.style.position = "static";
-            // currentElement.style.position = "static";
-            
+
             // how2 animate position changes for anchors
             
-            // Position current popover relative to previous popover
             const previousAnchorName = previousElement.style.anchorName;
-            // correct style keys for these css properties
+            
+            // Set specific position points for the current popover
+            currentElement.style.insetBlockEnd = `anchor(${previousAnchorName} top)`;
+            currentElement.style.insetInlineEnd = `anchor(${previousAnchorName} right)`;
+            
+            // Position current popover relative to prior adjacent sibling popover
             currentElement.style.positionAnchor = previousAnchorName;
-            currentElement.style.insetBlockEnd = `achor(${previousAnchorName} bottom)`;
-            currentElement.style.insetInlineStart = `achor(${previousAnchorName} left)`;
+        
+            // Create a bit of a gap between the current and prior popover via transform
+            
+            // Popovers after the first popover will use anchor positioning instead
+            // of absolute. Opt out of absolute positioning:
+            currentElement.style.position = "static";
+        }
+        
+        // Toast # 1 of the array - use absolute positioning instead of relative to
+        //      a previous toast
+        else if (previousElement === undefined) {
+            currentElement.style.position = "absolute";
+            currentElement.style.positionAnchor = "";
+            currentElement.style.insetBlockEnd = "";
+            currentElement.style.insetInlineEnd = "";
         }
     }
 }
@@ -107,14 +115,22 @@ function createToast(message, toastState) {
     popoverArray.push(toastAsideElement);
 
     // when the toast is closed, remove it from the array of toasts
-    toastAsideElement.addEventListener('cancel', (event) => {
-        const closedToastElement = event.target;
-        
-        removeFromArray(closedToastElement, popoverArray);
-        reorderPopoverPositions();
+    toastAsideElement.addEventListener('toggle', (event) => {
+        // don't remove popovers when they toggle open
+        if (event.newState == "closed") {
+            const closedToastElement = event.target;
+            
+            popoverArray = arrayWithoutElement(closedToastElement, popoverArray);
+            
+            // position the shown/hidden popover in relation to its siblings
+            reorderPopoverPositions();
+        }
+        // then the popover will be hidden via display.
     });
     
-    // position the new popover in relation to its siblings
+    
+    // performance boost:
+    // just add styles based on the most recently pushed list item. don't reorder for every popover
     reorderPopoverPositions();
     
     // show it
