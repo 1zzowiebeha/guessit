@@ -42,6 +42,36 @@ function arrayWithoutElement(element, array) {
     return leftArray.concat(rightArray);
 }
 
+function anchorPopover(popoverElement) {
+    const currentElementIndex = popoverArray.indexOf(popoverElement);
+    const previousElementIndex = currentElementIndex - 1;
+    
+    if (currentElementIndex == -1)
+        throw Error(`popoverElement "${JSON.stringify(popoverElement)}" not found in popoverArray.`);
+    
+    // The first popover has no popovers underneath it visually.
+    // It should be absolutely positioned instead of anchor positioned.
+    if (previousElementIndex == -1) {
+        popoverElement.style.position = "absolute";
+        popoverElement.style.positionAnchor = "";
+        popoverElement.style.insetBlockEnd = "";
+        popoverElement.style.insetInlineEnd = "";
+    }
+    else {
+        const previousElement = popoverArray[previousElementIndex];
+        const previousElementAnchorName = previousElement.style.anchorName;
+        
+        popoverElement.style.position = "static";
+            
+        // Position current popover relative to prior adjacent sibling popover
+        popoverElement.style.positionAnchor = previousElementAnchorName;
+        
+        // Set specific position points for the current popover
+        popoverElement.style.insetBlockEnd = `anchor(${previousElementAnchorName} top)`;
+        popoverElement.style.insetInlineEnd = `anchor(${previousElementAnchorName} right)`;
+    }
+}
+
 function reorderPopoverPositions() {
     for (let i = 0; i < popoverArray.length; i++) {
         const previousElement = popoverArray[i - 1];
@@ -53,12 +83,12 @@ function reorderPopoverPositions() {
             
             const previousAnchorName = previousElement.style.anchorName;
             
+            // Position current popover relative to prior adjacent sibling popover
+            currentElement.style.positionAnchor = previousAnchorName;
+            
             // Set specific position points for the current popover
             currentElement.style.insetBlockEnd = `anchor(${previousAnchorName} top)`;
             currentElement.style.insetInlineEnd = `anchor(${previousAnchorName} right)`;
-            
-            // Position current popover relative to prior adjacent sibling popover
-            currentElement.style.positionAnchor = previousAnchorName;
         
             // Create a bit of a gap between the current and prior popover via transform
             
@@ -119,21 +149,21 @@ function createToast(message, toastState) {
         // don't remove popovers when they toggle open
         if (event.newState == "closed") {
             const closedToastElement = event.target;
+            // hide before we reorder everything, since if it is below
+            //     reorderPopoverPositions(), it will position itself to the top left
+            //     until the default toggle behavior occurs after this event hook function
+            // closedToastElement.style.display = "none";
             
             popoverArray = arrayWithoutElement(closedToastElement, popoverArray);
             
             // position the shown/hidden popover in relation to its siblings
             reorderPopoverPositions();
         }
-        // then the popover will be hidden via display.
     });
     
+    anchorPopover(toastAsideElement);
     
-    // performance boost:
-    // just add styles based on the most recently pushed list item. don't reorder for every popover
-    reorderPopoverPositions();
-    
-    // show it
+    // Show popover
     toastAsideElement.showPopover();
 }
 
@@ -164,32 +194,31 @@ function makeGuess(value) {
     if (!gameRunning)
         throw Error("makeGuess was called while the game wasn't running.");
     
+    attemptsRemaining--;
+    
     if (attemptsRemaining == 0) {
         createToast("Max attempts reached", toastState.DANGER);
+        
         triggerLoss();
     }
-    
-    if (value > randomNumber) {
+    else if (value > randomNumber) {
         createToast(
             `Number too high. ${attemptsRemaining} attempts remain`,
             toastState.NEUTRAL
         );
-        
-        attemptsRemaining--;
     }
     else if (value < randomNumber) {
         createToast(
             `Number too low. ${attemptsRemaining} attempts remain`,
             toastState.NEUTRAL
-        );
-        
-        attemptsRemaining--;    
+        ); 
     }
     else if (value == randomNumber) {
         createToast(
             `Success! The number was ${randomNumber}`,
             toastState.SUCCESS
         );
+        
         triggerWin();
     }
 }
