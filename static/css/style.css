@@ -1,4 +1,13 @@
 /* =======
+Variables
+========== */
+
+:root {
+  --document-bg-color: #f0f0ee;;
+  --document-text-color: rgb(22 21 21);
+}
+
+/* =======
 Resets
 ========== */
 
@@ -10,7 +19,7 @@ Resets
 
 h1, p, a, input, label, button {
   font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
-  color: rgb(22, 21, 21);
+  color: var(--document-text-color);
 }
 
 p {
@@ -65,25 +74,16 @@ body {
   align-items: start;
   justify-content: center;
   
-  background: #f0f0ee;
+  background: var(--document-bg-color);
   padding: 1rem;
   
   height: 100vh;
   
   transition: .9s background;
   
-  &.bg-success {
-    *::selection {
-      background-color: #89f69f;
-      color: #022309;
-    }
-  }
-  
-  &.bg-danger {
-    *::selection {
-      background-color: #e53f3f;
-      color: #330707;
-    }
+  *::selection {
+    background-color: var(--document-text-color);
+    color: var(--document-bg-color);
   }
 }
 
