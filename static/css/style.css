@@ -13,6 +13,40 @@ h1, p, a, input, label, button {
   color: rgb(22, 21, 21);
 }
 
+p {
+  line-height: 100%;
+}
+
+a {
+  --text-color: rgb(117, 90, 226);
+  --hover-text-color: rgb(38, 22, 128);
+  color: var(--text-color);
+  transition: .3s color;
+  
+  &:hover {
+    color: var(--hover-text-color);
+  }
+}
+
+a[target="_blank"] {
+  &::after {
+    content: "";
+    display: inline-block;
+    vertical-align: baseline;
+    text-decoration: underline;
+
+    height: 1em;
+    width: 1em;
+    
+    transition: .3s background;
+    background: var(--text-color);
+    mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cg fill='none'%3E%3Cpath d='m12.593 23.258l-.011.002l-.071.035l-.02.004l-.014-.004l-.071-.035q-.016-.005-.024.005l-.004.01l-.017.428l.005.02l.01.013l.104.074l.015.004l.012-.004l.104-.074l.012-.016l.004-.017l-.017-.427q-.004-.016-.017-.018m.265-.113l-.013.002l-.185.093l-.01.01l-.003.011l.018.43l.005.012l.008.007l.201.093q.019.005.029-.008l.004-.014l-.034-.614q-.005-.018-.02-.022m-.715.002a.02.02 0 0 0-.027.006l-.006.014l-.034.614q.001.018.017.024l.015-.002l.201-.093l.01-.008l.004-.011l.017-.43l-.003-.012l-.01-.01z'/%3E%3Cpath fill='%23000' d='M11 6a1 1 0 1 1 0 2H5v11h11v-6a1 1 0 1 1 2 0v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2zm9-3a1 1 0 0 1 1 1v5a1 1 0 1 1-2 0V6.414l-8.293 8.293a1 1 0 0 1-1.414-1.414L17.586 5H15a1 1 0 1 1 0-2Z'/%3E%3C/g%3E%3C/svg%3E");
+  } 
+  
+  &:hover::after {
+    background: var(--hover-text-color);
+  }
+}
 
 html {
     /* https://stackoverflow.com/a/7049918/12637568 */
@@ -24,17 +58,26 @@ h1 {
 }
 
 body {
-  background: #f0f0ee;
   display: grid;
+  grid: 1fr auto
+        / auto;
+  
+  align-items: start;
   justify-content: center;
+  
+  background: #f0f0ee;
   padding: 1rem;
+  
+  height: 100vh;
+  
+  transition: .9s background;
 }
 
 /* =======
 Page content
 ========== */
 
-.content {
+.main-content {
   display: grid;
   align-content: center;
 }
@@ -49,6 +92,8 @@ Page content
         padding: .5rem;
         font-size: 1em;
         height: 3em;
+        
+        transition: .3s border, .3s background;
     }
 }
 
@@ -195,4 +240,16 @@ Utilities
 
 .hidden {
   display: none;
+}
+
+.text-center {
+  text-align: center;
+}
+
+.bg-success {
+  background: #45be5e;
+}
+
+.bg-danger {
+  background: #b85563;
 }

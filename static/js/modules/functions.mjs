@@ -17,6 +17,10 @@ let gameRunning;
 
 let popoverArray = [];
 
+// Preload
+const winAudio = new Audio('static/assets/sound/loss.wav');
+const lossAudio = new Audio('static/assets/sound/win.ogg');
+    
 ///////////////
 // Functions //
 ///////////////
@@ -162,6 +166,9 @@ function createToast(message, toastState) {
             
             // position the shown/hidden popover in relation to its siblings
             reorderPopoverPositions();
+            
+            // handle garbage
+            closedToastElement.remove();
         }
     });
     
@@ -180,6 +187,11 @@ function startNewGame(maxRandomValue) {
     
     guessInputElement.removeAttribute('disabled');
     newGameButtonElement.classList.add('hidden');
+    
+    bodyElement.classList.remove('bg-success', 'bg-danger');
+    
+    guessInputElement.value = "";
+    guessInputElement.focus();
 }
 
 
@@ -188,8 +200,10 @@ function triggerWin() {
     
     guessInputElement.setAttribute('disabled', '');
     newGameButtonElement.classList.remove('hidden');
-    // turn screen green
-    // play a sound
+    
+    bodyElement.classList.add('bg-success');
+
+    lossAudio.play();
 }
 
 
@@ -199,8 +213,9 @@ function triggerLoss() {
     guessInputElement.setAttribute('disabled', '');
     newGameButtonElement.classList.remove('hidden');
     
-    // turn screen red
-    // play a sound
+    bodyElement.classList.add('bg-danger');
+
+    winAudio.play();
 }
 
 
