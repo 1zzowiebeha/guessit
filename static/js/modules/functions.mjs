@@ -152,8 +152,10 @@ function createToast(message, toastState) {
     // add to array for re-ordering
     popoverArray.push(toastAsideElement);
 
-    // when the toast is closed, remove it from the array of toasts
-    toastAsideElement.addEventListener('toggle', (event) => {
+    // When the toast is closed, remove from the popoverArray and reorder toasts
+    // It must be beforetoggle, since toggle close (after popover is hidden) applies styling which causes
+    //     a visual flicker to occur due to display none messing with the anchor positioning
+    toastAsideElement.addEventListener('beforetoggle', (event) => {
         // don't remove popovers when they toggle open
         if (event.newState == "closed") {
             const closedToastElement = event.target;
@@ -162,13 +164,17 @@ function createToast(message, toastState) {
             //     until the default toggle behavior occurs after this event hook function
             // closedToastElement.style.display = "none";
             
+            closedToastElement.remove();
+                        
             popoverArray = arrayWithoutElement(closedToastElement, popoverArray);
-            
             // position the shown/hidden popover in relation to its siblings
             reorderPopoverPositions();
-            
-            // handle garbage
-            closedToastElement.remove();
+        }
+    });
+    
+    toastAsideElement.addEventListener('toggle', (event) => {
+        if (event.newState == "closed") {
+            const closedToastElement = event.target;
         }
     });
     
