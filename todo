@@ -5,9 +5,11 @@
 ✅ Use CSS to position new popovers above old ones along the screen's y-axis
     Maybe anchor positioning will help here
 
-Tweak popover colors to be darker in relation to win/loss screen colors
 Fix visual bug with popover deletion
 Add in and out animations to popover
+
+✅ Tweak popover colors to be darker in relation to win/loss screen colors
+Add underline to external link icon
 
 ✅ Make new game button appear after win/loss condition
 ✅ Add visuals to win/loss condition
