@@ -1,17 +1,22 @@
 ✅ Build the popover function
 
-Complete the rest of the popover styles (danger, neutral)
+✅ Complete the rest of the popover styles (danger, neutral)
 
-Use CSS to position new popovers above old ones along the screen's y-axis
+✅ Use CSS to position new popovers above old ones along the screen's y-axis
     Maybe anchor positioning will help here
 
+Tweak popover colors to be darker in relation to win/loss screen colors
+Fix visual bug with popover deletion
 Add in and out animations to popover
 
-Make new game button appear after win/loss condition
-Add visuals to win/loss condition
+✅ Make new game button appear after win/loss condition
+✅ Add visuals to win/loss condition
+✅ Add audio to win/loss condition
 
 ------
 read rest of modules page, import page, export page
+
+Implement classes & dependency injection
 
 add a ci/cd pipeline with the following:
     html doc validation
