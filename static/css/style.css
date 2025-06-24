@@ -30,6 +30,15 @@ body {
   padding: 1rem;
 }
 
+/* =======
+Page content
+========== */
+
+.content {
+  display: grid;
+  align-content: center;
+}
+
 #game-form {
     display: grid;
     grid: 1fr / auto-flow;
@@ -43,12 +52,28 @@ body {
     }
 }
 
+/* =======
+Button components
+========== */
+
 .btn {
-  border: none;
+  border: 1px solid grey;
   padding: .5rem 1rem;
   font-weight: 500;
   border-radius: 6px;
   cursor: pointer;
+  width: fit-content; /* don't stretch via justify-self default if a grid child */
+
+  transition: .3s background;
+}
+
+.btn--success {
+  border: 1px solid rgb(31, 93, 38);
+  background: rgb(115, 193, 115);
+  
+  &:hover {
+    background: rgb(100, 186, 100);
+  }
 }
 
 .btn--toast {
@@ -71,6 +96,11 @@ body {
   &:hover {
     background-color: rgb(14, 13, 13);
   }
+}
+
+#btn--new-game {
+  margin-top: 1rem;
+  justify-self: center;
 }
 
 /* =======

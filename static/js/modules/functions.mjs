@@ -7,6 +7,10 @@ import { MAX_ATTEMPTS_VALUE } from "./settings.mjs";
 
 const bodyElement = document.getElementsByTagName('body')[0];
 
+// use dependency injection once i learn about classes
+const newGameButtonElement = document.getElementById('btn--new-game');
+const guessInputElement = document.getElementById('guess-input');
+
 let randomNumber;
 let attemptsRemaining;
 let gameRunning;
@@ -173,11 +177,17 @@ function startNewGame(maxRandomValue) {
     
     gameRunning = true;
     attemptsRemaining = MAX_ATTEMPTS_VALUE;
+    
+    guessInputElement.removeAttribute('disabled');
+    newGameButtonElement.classList.add('hidden');
 }
 
 
 function triggerWin() {
     gameRunning = false;
+    
+    guessInputElement.setAttribute('disabled', '');
+    newGameButtonElement.classList.remove('hidden');
     // turn screen green
     // play a sound
 }
@@ -185,6 +195,10 @@ function triggerWin() {
 
 function triggerLoss() {
     gameRunning = false;
+    
+    guessInputElement.setAttribute('disabled', '');
+    newGameButtonElement.classList.remove('hidden');
+    
     // turn screen red
     // play a sound
 }
