@@ -134,7 +134,7 @@ function createToast(message, toastState) {
             <div class="flex-wrapper">
                 <p>${message}.</p>
                 
-                <button class="btn btn--toast" popovertarget="toast-${popoverID}" popovertargetaction="hide">
+                <button class="btn btn--toast" aria-details="Close toast with an id of toast-${popoverID}.">
                     <span class="sr-only">Close</span>
                 </button>
             </div>
@@ -148,6 +148,18 @@ function createToast(message, toastState) {
     const toastAsideElement = template.content.firstChild;
     
     bodyElement.prepend(toastAsideElement);
+    
+    // A flicker occurs if we use popovertarget & popovertarget action.
+    // This is because when we use anchor positioning on the popover, it
+    //  messes with the default anchor positioning that takes place with an invoker (popovertarget).
+    // When behavior like this is messed with, it completely breaks the behavior / is indeterminate.
+    // We need to implement our own popovertarget/popovertargetaction functionality in this case.
+    // (also hence the aria-details and aria-expanded attributes in the above component!)
+    // https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/button#popovertarget
+    const toastCloseButton = document.querySelector(`#toast-${popoverID} .btn--toast`);
+    toastCloseButton.addEventListener('click', function() {
+        toastAsideElement.hidePopover();
+    });
     
     // add to array for re-ordering
     popoverArray.push(toastAsideElement);
@@ -163,8 +175,6 @@ function createToast(message, toastState) {
             //     reorderPopoverPositions(), it will position itself to the top left
             //     until the default toggle behavior occurs after this event hook function
             // closedToastElement.style.display = "none";
-            
-            closedToastElement.remove();
                         
             popoverArray = arrayWithoutElement(closedToastElement, popoverArray);
             // position the shown/hidden popover in relation to its siblings
