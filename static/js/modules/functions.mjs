@@ -50,38 +50,44 @@ function arrayWithoutElement(element, array) {
     return leftArray.concat(rightArray);
 }
 
-function anchorPopover(popoverElement) {
-    const currentElementIndex = popoverArray.indexOf(popoverElement);
+function anchorPopover(popoverElementArg) {
+    // 0 1 2
+    const currentElementIndex = popoverArray.indexOf(popoverElementArg);
     const previousElementIndex = currentElementIndex - 1;
     
+    // Array.indexOf() returns -1 if nothing is found
     if (currentElementIndex == -1)
-        throw Error(`popoverElement "${JSON.stringify(popoverElement)}" not found in popoverArray.`);
+        throw Error(`popoverElement "${JSON.stringify(popoverElementArg)}" not found in popoverArray.`);
     
-    // The first popover has no popovers underneath it visually.
-    // It should be absolutely positioned instead of anchor positioned.
+    // The first popover has no popovers underneath it visually (a popover with index of -1 doesn't exist).
+    // The first popover should be absolutely positioned instead of anchor positioned.
     if (previousElementIndex == -1) {
-        popoverElement.style.position = "absolute";
-        popoverElement.style.positionAnchor = "";
-        popoverElement.style.insetBlockEnd = "";
-        popoverElement.style.insetInlineEnd = "";
+        // these are defaults; no need to set these for creation.
+        popoverElementArg.style.position = "absolute";
+        popoverElementArg.style.positionAnchor = "";
+        popoverElementArg.style.insetBlockEnd = "";
+        popoverElementArg.style.insetInlineEnd = "";
     }
     else {
         const previousElement = popoverArray[previousElementIndex];
         const previousElementAnchorName = previousElement.style.anchorName;
         
-        popoverElement.style.position = "static";
+        // Opt out of absolute positioning (not sure if this helps or does nothing but it could be confusing)
+        popoverElementArg.style.position = "static";
             
         // Position current popover relative to prior adjacent sibling popover
-        popoverElement.style.positionAnchor = previousElementAnchorName;
+        popoverElementArg.style.positionAnchor = previousElementAnchorName;
         
         // Set specific position points for the current popover
-        popoverElement.style.insetBlockEnd = `anchor(${previousElementAnchorName} top)`;
-        popoverElement.style.insetInlineEnd = `anchor(${previousElementAnchorName} right)`;
+        popoverElementArg.style.insetBlockEnd = `anchor(${previousElementAnchorName} top)`;
+        popoverElementArg.style.insetInlineEnd = `anchor(${previousElementAnchorName} right)`;
     }
 }
 
 function reorderPopoverPositions() {
     for (let i = 0; i < popoverArray.length; i++) {
+        console.log(popoverArray)
+        debugger;
         const previousElement = popoverArray[i - 1];
         const currentElement = popoverArray[i];
         
@@ -94,11 +100,23 @@ function reorderPopoverPositions() {
             // Position current popover relative to prior adjacent sibling popover
             currentElement.style.positionAnchor = previousAnchorName;
             
+            
             // Set specific position points for the current popover
-            currentElement.style.insetBlockEnd = `anchor(${previousAnchorName} top)`;
+            // currentElement.style.insetBlockEnd = `calc(anchor(${previousAnchorName} top) + 10px);`;
+            currentElement.style.insetBlockEnd = `anchor(${previousAnchorName} top);`;
+            
+            // test - does it work if we replace via regex instead of setting via style?
+            // const regex = /calc\(anchor\.+ top\ \+ 10px\)/g;
+            
+            // const match = currentElement.getAttribute('style').match(regex);
+            // const updatedStyle = currentElement.getAttribute('style').replace(
+            //     regex, `calc(anchor(${previousAnchorName} top) + 10px)`
+            // );
+            
             currentElement.style.insetInlineEnd = `anchor(${previousAnchorName} right)`;
-        
+            
             // Create a bit of a gap between the current and prior popover via transform
+            // currentElement.style.transform = 'translate(0, 1rem)';
             
             // Popovers after the first popover will use anchor positioning instead
             // of absolute. Opt out of absolute positioning:
@@ -114,6 +132,16 @@ function reorderPopoverPositions() {
             currentElement.style.insetInlineEnd = "";
         }
     }
+}
+
+function closeToast(toastElement) {
+    debugger;
+    popoverArray = arrayWithoutElement(toastElement, popoverArray);
+                
+        toastElement.remove();
+        
+    // position the shown/hidden popover in relation to its siblings
+    reorderPopoverPositions();
 }
 
 /**
@@ -133,6 +161,7 @@ function createToast(message, toastState) {
         <aside id="toast-${popoverID}" class="toast ${toastState}" style="anchor-name: --anchor-${popoverID}" popover="manual">
             <div class="flex-wrapper">
                 <p>${message}.</p>
+                <p>I'm --anchor-${popoverID}</p>
                 
                 <button class="btn btn--toast" aria-details="Close toast with an id of toast-${popoverID}.">
                     <span class="sr-only">Close</span>
@@ -157,9 +186,9 @@ function createToast(message, toastState) {
     // (also hence the aria-details and aria-expanded attributes in the above component!)
     // https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/button#popovertarget
     const toastCloseButton = document.querySelector(`#toast-${popoverID} .btn--toast`);
-    toastCloseButton.addEventListener('click', function() {
-        toastAsideElement.hidePopover();
-    });
+    
+    // Connect toast close button functionality
+    toastCloseButton.addEventListener('click', () => closeToast(toastAsideElement));
     
     // add to array for re-ordering
     popoverArray.push(toastAsideElement);
@@ -167,26 +196,26 @@ function createToast(message, toastState) {
     // When the toast is closed, remove from the popoverArray and reorder toasts
     // It must be beforetoggle, since toggle close (after popover is hidden) applies styling which causes
     //     a visual flicker to occur due to display none messing with the anchor positioning
-    toastAsideElement.addEventListener('beforetoggle', (event) => {
-        // don't remove popovers when they toggle open
-        if (event.newState == "closed") {
-            const closedToastElement = event.target;
-            // hide before we reorder everything, since if it is below
-            //     reorderPopoverPositions(), it will position itself to the top left
-            //     until the default toggle behavior occurs after this event hook function
-            // closedToastElement.style.display = "none";
+    // toastAsideElement.addEventListener('beforetoggle', (event) => {
+    //     // don't remove popovers when they toggle open
+    //     if (event.newState == "closed") {
+    //         const closedToastElement = event.target;
+    //         // hide before we reorder everything, since if it is below
+    //         //     reorderPopoverPositions(), it will position itself to the top left
+    //         //     until the default toggle behavior occurs after this event hook function
+    //         // closedToastElement.style.display = "none";
+            
+    //         // If we remove the element in beforetoggle, it crashes the page (bug? or null ref...)
                         
-            popoverArray = arrayWithoutElement(closedToastElement, popoverArray);
-            // position the shown/hidden popover in relation to its siblings
-            reorderPopoverPositions();
-        }
-    });
+    //         popoverArray = arrayWithoutElement(closedToastElement, popoverArray);
+    //     }
+    // });
     
-    toastAsideElement.addEventListener('toggle', (event) => {
-        if (event.newState == "closed") {
-            const closedToastElement = event.target;
-        }
-    });
+    // toastAsideElement.addEventListener('toggle', (event) => {
+    //     if (event.newState == "closed") {
+    //         const closedToastElement = event.target;
+    //     }
+    // });
     
     anchorPopover(toastAsideElement);
     
