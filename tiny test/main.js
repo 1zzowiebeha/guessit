@@ -43,6 +43,7 @@ function reorderPopovers() {
  * It has no previous siblings.
  */
 function anchorPopover(currentPopoverElement) {
+    debugger;
     const priorPopoverElement = currentPopoverElement.previousElementSibling;
 
     if (priorPopoverElement !== null) {
@@ -59,13 +60,27 @@ function anchorPopover(currentPopoverElement) {
         currentPopoverElement.style.insetBlockEnd = `calc(anchor(${priorPopoverAnchorName} top) + 10px)`;
         currentPopoverElement.style.insetInlineEnd = `anchor(${priorPopoverAnchorName} right)`;
     }
+    // No prior sibling toast element. Ensure the first toast in the DOM is
+    //      positioned absolutely for all the other adjacent popovers to chain anchors from.
+    // Note: This code will run on the first element the first time the toasts are anchored.
+    //  These styles apply to toasts by default, so it is a bit redundant but works for future reorders.
+    else {
+        // Override absolute positioning style for .toast
+        currentPopoverElement.style.position = "absolute";
+
+        // No anchor for this fella.
+        currentPopoverElement.style.positionAnchor = "";
+
+        // No relative position details for the first toast.
+        currentPopoverElement.style.insetBlockEnd = "";
+        currentPopoverElement.style.insetInlineEnd = "";
+    }
 }
 
 
 
 function closePopover(popoverElementArg) {
-    popoverElementArg.hidePopover();
-
+    
     // assign a new array that doesn't contain the passed popoverElementArg
     visiblePopovers = visiblePopovers.filter(
         (visiblePopoverElement) => visiblePopoverElement !== popoverElementArg
@@ -73,6 +88,10 @@ function closePopover(popoverElementArg) {
 
     // use the visiblePopovers array to re-order the visible popovers
     reorderPopovers();
+    
+    // if display is set to none, then anchor-position no longer works.
+    // hide the popover only after we reorder visible popovers.
+    popoverElementArg.hidePopover();
 
     popoverElementArg.remove();
 }
@@ -98,22 +117,29 @@ function newPopover() {
             </div>
         </div>
     `;
-
     // remove whitespace text nodes to prevent them from being assigned to the firstChild value.
     template.innerHTML = toastComponent.trim();
-
+    
     // thank God for this. creating elements and setting properties individually is too much to manage.
     const popoverElement = template.content.firstChild;
     
+    // Set popover's anchor name for other popovers to position themselves relative to this one
+    popoverElement.style.anchorName = `--toast-${uniqueID}`;
+    
     // Add popover close functionality to popover's close button
-    const popoverCloseButton = document.querySelector(`#${popoverElement.id} .toast__button`);
+    const popoverCloseButton = template.content.querySelector(`#toast-${uniqueID} .toast__button`);
+    
     popoverCloseButton.addEventListener('click', () =>
         closePopover(popoverElement)
     );
     
     // Add popover to the top of the popover container
     const popoverContainer = document.getElementById('popover-container');
-    popoverContainer.prepend(popoverElement);
+    popoverContainer.append(popoverElement);
+    
+    anchorPopover(popoverElement);
+    
+    popoverElement.showPopover();
 }
 
 /**
@@ -149,8 +175,7 @@ function main() {
 
     // why "Uncaught TypeError: Cannot read properties of null (reading 'addEventListener')" ?
     const newPopoverButton = document.getElementById('btn--new-popover');
-    console.log(newPopoverButton);
-    newPopoverButton?.addEventListener('click', newPopover);
+    newPopoverButton.addEventListener('click', newPopover);
 }
 
 // the reason the first version of this behavior doesn't work might be due to a logic error somewhere
