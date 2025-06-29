@@ -138,7 +138,7 @@ function closeToast(toastElement) {
     debugger;
     popoverArray = arrayWithoutElement(toastElement, popoverArray);
                 
-        toastElement.remove();
+    toastElement.remove();
         
     // position the shown/hidden popover in relation to its siblings
     reorderPopoverPositions();

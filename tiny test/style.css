@@ -1,0 +1,77 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    padding: 2rem;
+    overflow: hidden; /* hide notifications that animate outside of the body */
+}
+
+html,
+body {
+    height: 100vw;
+}
+
+
+.toast {
+    border: 1px solid grey;
+    border-radius: 6px;
+    padding: 1rem;
+
+    /* first toast is positioned absolutely to the bottom right of the screen */
+    position: absolute;
+    /* popovers set inset to 0, so we must reset top/left to auto */
+    inset: auto 1rem 1rem auto;
+    animation: toast-show .6s ease-in-out 1 forwards;
+    transition: .6s insetBlockEnd, .6s insetInlineEnd;
+
+    /* if we mess with the popover element's display property, show and hide behavior will have indeterminate & non-functional behavior. use a wrapper to layout a popover's children: */
+    .grid-wrapper {
+        display: grid;
+        grid: auto / auto auto;
+        align-items: center;
+        gap: 1rem;
+    }
+
+    .toast__button {
+        padding: .5rem;
+    }
+}
+
+/* =======
+Notification animations
+========== */
+
+@keyframes toast-show {
+    from {
+        transform: translate(5rem, 3.5rem);
+    }
+    50% {
+        transform: translate(-1rem, -1rem);
+    }
+    75% {
+        transform: translate(.5rem, .5rem);
+    }
+    to {
+      
+        transform: translate(0, 0);
+    }
+}
+
+
+@keyframes toast-out {
+    from {
+        transform: translate(0, 0);
+    }
+    50% {
+        transform: translate(-3rem, 0);
+    }
+    75% {
+        transform: translate(-3rem, 0);
+    }
+    to {
+        transform: translate(50vw, 0);
+    }
+}

@@ -3,91 +3,18 @@
 <html lang="en-US">
 
 <head>
-    <meta charset="utf-8" />
+    <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Bruh momento</title>
 
+    <link rel="stylesheet" href="style.css">
     <script defer src="main.js"></script>
-
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            padding: 2rem;
-        }
-
-        html,
-        body {
-            height: 100vw;
-        }
-
-
-        .toast {
-            border: 1px solid grey;
-            border-radius: 6px;
-            padding: 1rem;
-
-            /* first toast is positioned absolutely to the bottom right of the screen */
-            position: absolute;
-            /* popovers set inset to 0, so we must reset top/left to auto */
-            inset: auto 1rem 1rem auto;
-            tranform: translate(0, 2rem);
-
-            /* if we mess with the popover element's display property, show and hide behavior will have indeterminate & non-functional behavior. use a wrapper to layout a popover's children: */
-            .grid-wrapper {
-                display: grid;
-                grid: auto / auto auto;
-                align-items: center;
-                gap: 1rem;
-            }
-
-            .toast__button {
-                padding: .5rem;
-            }
-        }
-    </style>
 </head>
 
 <body>
     <main>
-        <div id="popover-container">
+        <div id="popover-container"></div>
 
-            <div id="toast-1" class="toast" style="anchor-name: --toast-1" popover="manual">
-                <div class="grid-wrapper">
-                    <p>Don't crash me now 1!</p>
-
-                    <button class="toast__button">
-                        Close
-                    </button>
-                </div>
-            </div>
-
-            <div id="toast-2" class="toast" style="anchor-name: --toast-2" popover="manual">
-                <div class="grid-wrapper">
-                    <p>Don't crash me now 2!</p>
-
-                    <button class="toast__button">
-                        Close
-                    </button>
-                </div>
-            </div>
-
-            <div id="toast-3" class="toast" style="anchor-name: --toast-3" popover="manual">
-                <div class="grid-wrapper">
-                    <p>Don't crash me now 3!</p>
-
-                    <button class="toast__button">
-                        Close
-                    </button>
-                </div>
-            </div>
-
-        </div>
-        
         <button id="btn--new-popover">
             Create a new popover
         </button>

@@ -43,7 +43,6 @@ function reorderPopovers() {
  * It has no previous siblings.
  */
 function anchorPopover(currentPopoverElement) {
-    debugger;
     const priorPopoverElement = currentPopoverElement.previousElementSibling;
 
     if (priorPopoverElement !== null) {
@@ -80,20 +79,27 @@ function anchorPopover(currentPopoverElement) {
 
 
 function closePopover(popoverElementArg) {
-    
     // assign a new array that doesn't contain the passed popoverElementArg
     visiblePopovers = visiblePopovers.filter(
         (visiblePopoverElement) => visiblePopoverElement !== popoverElementArg
     );
-
-    // use the visiblePopovers array to re-order the visible popovers
-    reorderPopovers();
     
-    // if display is set to none, then anchor-position no longer works.
-    // hide the popover only after we reorder visible popovers.
-    popoverElementArg.hidePopover();
+    // play and wait for closing animation to complete
+    popoverElementArg.style.animation = "toast-out 1s 1 forwards";
+    
+    popoverElementArg.addEventListener('animationend', (event) => {
+        if (event.animationName == "toast-out") {
+            // use the visiblePopovers array to re-order the visible popovers
+            reorderPopovers();
+            
+            // if display is set to none, then anchor-position no longer works.
+            // hide the popover only after we reorder visible popovers.
+            popoverElementArg.hidePopover();
 
-    popoverElementArg.remove();
+            popoverElementArg.remove();
+        }
+            
+    });
 }
 
 function generateUniqueToastID() {
@@ -109,7 +115,7 @@ function newPopover() {
     const toastComponent = `
         <div id="toast-${uniqueID}" class="toast" popover="manual">
             <div class="grid-wrapper">
-                <p>Don't crash me now! ${uniqueID}</p>
+                <p>Notification!</p>
 
                 <button class="toast__button">
                     Close
@@ -138,6 +144,9 @@ function newPopover() {
     popoverContainer.append(popoverElement);
     
     anchorPopover(popoverElement);
+    
+    // Add to the list of visible popovers for re-ordering purposes.
+    visiblePopovers.push(popoverElement);
     
     popoverElement.showPopover();
 }
