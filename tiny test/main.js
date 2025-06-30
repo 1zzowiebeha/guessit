@@ -76,7 +76,25 @@ function anchorPopover(currentPopoverElement) {
     }
 }
 
+function getClosingAnimatedPopovers() {
+    for (const popover of visiblePopovers) {
+        console.log(popover.getAnimations());
+    }
+    
+    return visiblePopovers.filter(
+        (popover) => popover
+            .getAnimations()
+            .filter(
+                (animation) => (console.log(animation.animationName), animation.animationName == "toast-out")
+            ).length == 1
+    );
+}
 
+function getSecondsFloatFromAnimationDuration(duration_string) {
+    
+    // blah
+    const matches = duration_string.match(/(([\d\.]+)((?:ms)|(?:s)))|auto/)
+}
 
 function closePopover(popoverElementArg) {
     // assign a new array that doesn't contain the passed popoverElementArg
@@ -85,19 +103,70 @@ function closePopover(popoverElementArg) {
     );
     
     // play and wait for closing animation to complete
-    popoverElementArg.style.animation = "toast-out 1s 1 forwards";
+    popoverElementArg.classList.add("closing");
     
+    // bugs to sort out:
+    // closing a lot of popovers at once has an issue
+    // closing popovers at different times in succession causes them to overlap as they animate?.. hmm...
+    // once all closing animations occur, then reorder
+    const garbageCollectAfterSeconds = min(0, popoverElementArg.style.animationDuration - .1);
+    setTimeout(() => {
+        
+    });
     popoverElementArg.addEventListener('animationend', (event) => {
         if (event.animationName == "toast-out") {
-            // use the visiblePopovers array to re-order the visible popovers
-            reorderPopovers();
+            const popoverElementsAnimating = getClosingAnimatedPopovers();
             
-            // if display is set to none, then anchor-position no longer works.
-            // hide the popover only after we reorder visible popovers.
-            popoverElementArg.hidePopover();
-
-            popoverElementArg.remove();
+            // If all toast-out animations have completed, remove the popovers.
+            if (popoverElementsAnimating.length == 0) {
+                reorderPopovers();
+                
+                // If display is set to none (a product of hidePopover), then anchor-position no longer works,
+                //     ... and the element will appear in the top left corner of the page.
+                // Hide the popover only after we reorder visible popovers.
+                popoverElementArg.hidePopover();
+    
+                popoverElementArg.remove();
+            }
         }
+                // use the visiblePopovers array to re-order the visible popovers
+                
+                // We need to wait until the toasts dependent on the one that has ended its
+                //  animation have completed, since if we delete the one lowest in the chain the other dependents.
+                // If we close three one second after the previous, the first will wait for the second,
+                //  the first will finish then wait to remove itself by waiting for the second,
+                //  the second will finish which will remove the first but the second is waiting for the third,
+                // so the second's anchor position will break causing a weird position issue until the third
+                // is finished at which point the 2nd and third can be removed.
+                // We should wait for all popovers to close? idk.... maybe just reorder but then remove
+                // once all animations are complete for garbage collection, and to still allow
+                // old popovers to animate at their last position? i'll need to think about how
+                // that will work...
+                
+                // let adjacentFollowingToastSiblingElement = popoverElementArg.nextSibling;
+                // if (adjacentFollowingToastSiblingElement.style.animation) {
+                //     adjacentFollowingToastSiblingElement.addEventListener('animationend', () => {
+                //         reorderPopovers();
+                        
+                //         // if display is set to none, then anchor-position no longer works.
+                //         // hide the popover only after we reorder visible popovers.
+                //         popoverElementArg.hidePopover();
+            
+                //         popoverElementArg.remove();
+                //     });
+                // }
+                // else {
+                //         reorderPopovers();
+                        
+                //         // if display is set to none, then anchor-position no longer works.
+                //         // hide the popover only after we reorder visible popovers.
+                //         popoverElementArg.hidePopover();
+            
+                //         popoverElementArg.remove();
+                // }
+                //  still animating out will have no place to anchor to
+        //     }
+        // }
             
     });
 }

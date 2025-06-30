@@ -40,6 +40,10 @@ body {
     }
 }
 
+toast.closing {
+    animation: toast-hide 1s ease-in-out 1 forwards;
+}
+
 /* =======
 Notification animations
 ========== */
@@ -61,7 +65,7 @@ Notification animations
 }
 
 
-@keyframes toast-out {
+@keyframes toast-hide {
     from {
         transform: translate(0, 0);
     }
