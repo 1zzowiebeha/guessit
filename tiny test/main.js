@@ -1,4 +1,7 @@
 let visiblePopovers = [];
+let closingPopovers = [];
+let closeAnimationCompletedPopovers = [];
+
 
 function reorderPopovers() {
     for (let i = 0; i < visiblePopovers.length; i++) {
@@ -93,32 +96,87 @@ function getClosingAnimatedPopovers() {
 function getSecondsFloatFromAnimationDuration(duration_string) {
     
     // blah
-    const matches = duration_string.match(/(([\d\.]+)((?:ms)|(?:s)))|auto/)
+    const matches = duration_string.match(/(([\d\.]+)((?:ms)|(?:s)))|auto/);
+    console.log(duration_string);
+    
+    if (!matches) return 2000;
+    
+    if (matches.includes('ms')) {
+        return 2;
+    }
+    return 2;
 }
 
-function closePopover(popoverElementArg) {
-    // assign a new array that doesn't contain the passed popoverElementArg
-    visiblePopovers = visiblePopovers.filter(
-        (visiblePopoverElement) => visiblePopoverElement !== popoverElementArg
-    );
-    
-    // play and wait for closing animation to complete
+function closePopover(popoverElementArg) {  
+    // Add to closingPopovers list to keep track of
+    //  when all popover close animations complete so we can garbage collect.
+    // We want to keep them around so that any dependencies for anchors
+    //  don't disappear and cause parent popover anchors to break.
+    // We could optimize this through some other means, but for now we'll try this.
+    closingPopovers.push(popoverElementArg);
+      
+    // Play the closing animation
     popoverElementArg.classList.add("closing");
     
     // bugs to sort out:
     // closing a lot of popovers at once has an issue
     // closing popovers at different times in succession causes them to overlap as they animate?.. hmm...
     // once all closing animations occur, then reorder
-    const garbageCollectAfterSeconds = min(0, popoverElementArg.style.animationDuration - .1);
-    setTimeout(() => {
+    // const animations = popoverElementArg.getAnimations().map(
+    //     (animation) => animation.effect.getKeyframes()
+    //     // .getComputedTiming().activeDuration
+    // );
+    // get total time of animation. subtract a few milliseconds
+    // then delete so that we know it's the hide animation
+    // maybe we can look into the animations and await the correct one's finish
+    // and do that for all animations? maybe...
+    // console.log(animations);
+    // const animationDuration = popoverElementArg.style.animationDuration;
+    // let secondsUntilGarbageCollection = Math.min(
+    //     0, getSecondsFloatFromAnimationDuration(animationDuration) - 0.1
+    // );
+    
+    // setTimeout(() => {
+    //     // Remove the passed popoverElementArg from the visiblePopovers array
+    //     //  for re-ordering purposes
+    //     visiblePopovers = visiblePopovers.filter(
+    //         (visiblePopoverElement) => visiblePopoverElement !== popoverElementArg
+    //     );
+    
+    //     reorderPopovers();
         
-    });
+    //     // If display is set to none (a product of hidePopover), then anchor-position no longer works,
+    //     //     ... and the element will appear in the top left corner of the page.
+    //     // Hide the popover only after we reorder visible popovers.
+    //     popoverElementArg.hidePopover();
+
+    //     popoverElementArg.remove();
+    // }, secondsUntilGarbageCollection);
+    
+    
+    
     popoverElementArg.addEventListener('animationend', (event) => {
-        if (event.animationName == "toast-out") {
-            const popoverElementsAnimating = getClosingAnimatedPopovers();
+        if (event.animationName == "toast-hide") {
+            // Remove popover from those in the process of playing out
+            //  their close animation.
+            closingPopovers = closingPopovers.filter(
+                (closingPopoverElement) => closingPopoverElement !== popoverElementArg
+            );
             
-            // If all toast-out animations have completed, remove the popovers.
-            if (popoverElementsAnimating.length == 0) {
+            // Add popover to those that have completed their popover animation.
+            closeAnimationCompletedPopovers.push(popoverElementArg);
+            
+            // All popovers have finished playing their close animation.
+            // We can safely garbage collect without
+            //  breaking any parent popovers dependent on child popovers
+            //  for anchor positioning.
+            if (closingPopovers.length == 0) {
+                // Remove the popoverElementArg from the visiblePopovers array
+                //  for re-ordering purposes
+                visiblePopovers = visiblePopovers.filter(
+                    (visiblePopoverElement) => !closeAnimationCompletedPopovers.includes(visiblePopoverElement)
+                );
+            
                 reorderPopovers();
                 
                 // If display is set to none (a product of hidePopover), then anchor-position no longer works,
@@ -127,8 +185,13 @@ function closePopover(popoverElementArg) {
                 popoverElementArg.hidePopover();
     
                 popoverElementArg.remove();
+                
+                // Clear both arrays.
+                closingPopovers = [];
+                closeAnimationCompletedPopovers = [];
             }
         }
+    });
                 // use the visiblePopovers array to re-order the visible popovers
                 
                 // We need to wait until the toasts dependent on the one that has ended its
@@ -167,8 +230,6 @@ function closePopover(popoverElementArg) {
                 //  still animating out will have no place to anchor to
         //     }
         // }
-            
-    });
 }
 
 function generateUniqueToastID() {
@@ -186,8 +247,10 @@ function newPopover() {
             <div class="grid-wrapper">
                 <p>Notification!</p>
 
-                <button class="toast__button">
-                    Close
+                <button class="btn btn--toast">
+                    <span class="sr-only">
+                        Close
+                    </span>
                 </button>
             </div>
         </div>
@@ -202,7 +265,7 @@ function newPopover() {
     popoverElement.style.anchorName = `--toast-${uniqueID}`;
     
     // Add popover close functionality to popover's close button
-    const popoverCloseButton = template.content.querySelector(`#toast-${uniqueID} .toast__button`);
+    const popoverCloseButton = template.content.querySelector(`#toast-${uniqueID} .btn--toast`);
     
     popoverCloseButton.addEventListener('click', () =>
         closePopover(popoverElement)
