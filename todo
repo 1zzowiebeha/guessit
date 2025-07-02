@@ -5,8 +5,8 @@
 ✅ Use CSS to position new popovers above old ones along the screen's y-axis
     Maybe anchor positioning will help here
 
-Fix visual bug with popover deletion
-Add in and out animations to popover
+✅ Fix visual bug with popover deletion
+✅ Add in and out animations to popover
 
 ✅ Tweak popover colors to be darker in relation to win/loss screen colors
 Add underline to external link icon

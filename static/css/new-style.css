@@ -1,30 +1,135 @@
-* {
+/* =======
+Variables
+========== */
+
+:root {
+    --document-bg-color: #f0f0ee;
+    --document-text-color: rgb(22 21 21);
+}
+
+/* =======
+Resets
+========== */
+
+*,
+*::after,
+*::before {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-    
+}
+
+h1,
+p,
+a,
+input,
+label,
+button {
     font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
-    color: rgb(41, 41, 41);
+    color: var(--document-text-color);
+}
+
+p {
+    line-height: 100%;
+}
+
+a {
+    --text-color: rgb(117, 90, 226);
+    --hover-text-color: rgb(38, 22, 128);
+    color: var(--text-color);
+    transition: .3s color;
+
+    &:hover {
+        color: var(--hover-text-color);
+    }
+}
+
+a[target="_blank"] {
+    &::after {
+        content: "asdasdad";
+        display: inline-block;
+        vertical-align: baseline;
+        text-decoration: underline;
+
+        height: 1em;
+        width: 1em;
+
+        transition: .3s background;
+        background: var(--text-color);
+        mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cg fill='none'%3E%3Cpath d='m12.593 23.258l-.011.002l-.071.035l-.02.004l-.014-.004l-.071-.035q-.016-.005-.024.005l-.004.01l-.017.428l.005.02l.01.013l.104.074l.015.004l.012-.004l.104-.074l.012-.016l.004-.017l-.017-.427q-.004-.016-.017-.018m.265-.113l-.013.002l-.185.093l-.01.01l-.003.011l.018.43l.005.012l.008.007l.201.093q.019.005.029-.008l.004-.014l-.034-.614q-.005-.018-.02-.022m-.715.002a.02.02 0 0 0-.027.006l-.006.014l-.034.614q.001.018.017.024l.015-.002l.201-.093l.01-.008l.004-.011l.017-.43l-.003-.012l-.01-.01z'/%3E%3Cpath fill='%23000' d='M11 6a1 1 0 1 1 0 2H5v11h11v-6a1 1 0 1 1 2 0v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2zm9-3a1 1 0 0 1 1 1v5a1 1 0 1 1-2 0V6.414l-8.293 8.293a1 1 0 0 1-1.414-1.414L17.586 5H15a1 1 0 1 1 0-2Z'/%3E%3C/g%3E%3C/svg%3E");
+        text-decoration: underline;
+    }
+
+    &:hover::after {
+        background: var(--hover-text-color);
+    }
+}
+
+html {
+    /* https://stackoverflow.com/a/7049918/12637568 */
+    height: 100vh;
+}
+
+h1 {
+    text-align: center;
 }
 
 body {
-    padding: 2rem;
+    display: grid;
+    grid: 1fr auto / auto;
+
+    align-items: start;
+    justify-content: center;
+
+    background: var(--document-bg-color);
+    padding: 1rem;
+
+    height: 100vh;
+
+    transition: .9s background;
+    
     overflow: hidden; /* hide notifications that animate outside of the body */
 }
 
-html,
-body {
-    height: 100vw;
+*::selection {
+    background-color: var(--document-text-color);
+    color: var(--document-bg-color);
 }
 
-*::selection {
-    color: white;
-    background: rgb(41, 41, 41);;
+/*dddddddddddddddddd*/
+
+
+/* =======
+Page content
+========== */
+
+.main-content {
+    display: grid;
+    align-content: center;
+}
+
+#game-form {
+    display: grid;
+    grid: 1fr / auto-flow;
+    align-items: center;
+    gap: 1rem;
+
+    #guess-input {
+        padding: .5rem;
+        font-size: 1em;
+        height: 3em;
+
+        transition: .3s border, .3s background;
+    }
 }
 
 /* =======
 Toast
 ========== */
+
+[popover]::backdrop {
+    display: none;
+}
 
 .toast {
     border-radius: 6px;
@@ -58,6 +163,8 @@ Toast
 .toast.closing {
     animation: toast-hide 1s ease-in-out 1 forwards;
 }
+
+
 
 /* =======
 Buttons
@@ -107,26 +214,9 @@ Buttons
     }
 }
 
-.toast--success {
-    border: 2px solid rgb(87, 137, 45);
-    background: rgb(184, 255, 184);
-    box-shadow: 0px 0px 2px #25773640;
-
-    overflow: hidden;
-    /* don't scroll to accomodate rotated ::before icon */
-
-    &::before {
-        content: "";
-        z-index: -1;
-        /* display behind the text within the popover */
-        left: 0rem;
-        height: 3rem;
-        aspect-ratio: 1 / 1;
-
-        background-color: rgb(165, 208, 165);
-        /* svgs aren't 100% of height and width */
-        mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 0 0'%3E%3Cpath fill='%23000' d='m14 21.414l-5-5.001L10.413 15L14 18.586L21.585 11L23 12.415z'/%3E%3Cpath fill='%23000' d='M16 2a14 14 0 1 0 14 14A14 14 0 0 0 16 2m0 26a12 12 0 1 1 12-12a12 12 0 0 1-12 12'/%3E%3C/svg%3E");
-    }
+#btn--new-game {
+    margin-top: 1rem;
+    justify-self: center;
 }
 
 /* =======
@@ -197,4 +287,20 @@ Utilities
 .sr-only {
     position: absolute;
     left: -99999px;
+}
+
+.hidden {
+    display: none;
+}
+
+.text-center {
+    text-align: center;
+}
+
+.bg-success {
+    background: #45be5e;
+}
+
+.bg-danger {
+    background: #b85563;
 }

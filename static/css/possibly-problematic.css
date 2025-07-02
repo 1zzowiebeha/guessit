@@ -1,0 +1,61 @@
+.toast--success {
+    border: 2px solid rgb(87, 137, 45);
+    background: rgb(184, 255, 184);
+    box-shadow: 0px 0px 2px #25773640;
+
+    overflow: hidden;
+    /* don't scroll to accomodate rotated ::before icon */
+
+    /* &::before {
+        content: "";
+        z-index: -1;
+         display behind the text within the popover 
+        left: 0rem;
+        height: 3rem;
+        aspect-ratio: 1 / 1;
+
+        background-color: rgb(165, 208, 165);
+         svgs aren't 100% of height and width 
+        mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 0 0'%3E%3Cpath fill='%23000' d='m14 21.414l-5-5.001L10.413 15L14 18.586L21.585 11L23 12.415z'/%3E%3Cpath fill='%23000' d='M16 2a14 14 0 1 0 14 14A14 14 0 0 0 16 2m0 26a12 12 0 1 1 12-12a12 12 0 0 1-12 12'/%3E%3C/svg%3E");
+    } */
+}
+
+.toast--danger {
+    border: 2px solid rgb(195, 56, 52);
+    background: rgb(255, 81, 81);
+    box-shadow: 0px 0px 2px #77252540;
+
+    overflow: hidden;
+    /* don't scroll to accomodate rotated ::before icon */
+
+    /* &::before {
+        content: "";
+        z-index: -1;
+         display behind the text within the popover 
+        left: 0rem;
+        height: 3rem;
+        aspect-ratio: 1 / 1;
+
+        background-color: rgb(217, 119, 119);
+        mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='%23c53a3a' d='M12 4c-4.42 0-8 3.58-8 8s3.58 8 8 8s8-3.58 8-8s-3.58-8-8-8m1 13h-2v-2h2zm0-4h-2V7h2z' opacity='0.3'/%3E%3Cpath fill='%23c53a3a' d='M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2M12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8s8 3.58 8 8s-3.58 8-8 8m-1-5h2v2h-2zm0-8h2v6h-2z'/%3E%3C/svg%3E");
+    } */
+}
+
+.toast--neutral {
+    border: 2px solid hsl(0, 0%, 64%);
+    background: hsl(0, 0%, 95%);
+    overflow: hidden;
+    /* don't scroll to accomodate rotated ::before icon */
+
+    /* &::before {
+        content: "";
+        z-index: -1;
+         display behind the text within the popover 
+        left: 0rem;
+        height: 3rem;
+        aspect-ratio: 1 / 1;
+
+        background-color: hsl(0, 0%, 66%);
+        mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='%23000' d='M12 4c-4.41 0-8 3.59-8 8s3.59 8 8 8s8-3.59 8-8s-3.59-8-8-8m1 13h-2v-6h2zm0-8h-2V7h2z' opacity='0.3'/%3E%3Cpath fill='%23000' d='M11 7h2v2h-2zm0 4h2v6h-2zm1-9C6.48 2 2 6.48 2 12s4.48 10 10 10s10-4.48 10-10S17.52 2 12 2m0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8s8 3.59 8 8s-3.59 8-8 8'/%3E%3C/svg%3E");
+    } */
+}

@@ -1,54 +1,55 @@
 <!DOCTYPE html>
 
 <html lang="en-US">
-    <head>
-        <meta charset="utf-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link rel="stylesheet" href="static/css/new-style.css">
+
+    <!-- how do type="module" scripts work? can they be imported from by other scripts in the document? -->
+    <!-- why are only modules allowed to import? -->
+    <script type="module" src="static/js/main.js"></script>
+
+    <link rel="icon" href="static/assets/favicon.ico">
+    <title>Guess the number</title>
+</head>
+
+<body>
+    <main class="main-content">
+        <div id="popover-container"></div>
         
-        <link rel="stylesheet" href="static/css/style.css">
-        
-        <!-- how do type="module" scripts work? can they be imported from by other scripts in the document? -->
-        <!-- why are only modules allowed to import? -->
-        <script type="module" src="static/js/main.js"></script>
-        
-        <link rel="icon" href="static/assets/favicon.ico">
-        <title>Guess the number</title>
-    </head>
-    <body>
-        <main class="main-content">
-            <h1>Guess it!</h1>
-            
-            <form id="game-form">
-                <label class="game-form__label" for="guess-input">
-                    Guess a number between 0 and 100:
-                </label>
-                
-                <input id="guess-input" type="number"
-                       pattern="\d+" min="0" max="100"
-                       required name="guessed-number">
-            </form>
-            
-            <button id="btn--new-game" class="btn btn--success">
-                New game
-            </button>
-        </main>
-        
-        <footer>
-            <p class="text-center">
-                Made by Zowie Beha
-            </p>
-            <p class="text-center">
-                Sounds by
-                <a href="https://freesound.org/people/Yoshicakes77/sounds/703543/"
-                   target="_blank">
-                    Yoshicakes77
-                </a>
-                and
-                <a href="https://freesound.org/people/suntemple/sounds/253174/"
-                   target="_blank">
-                    suntemple
-                </a>
-            </p>
-        </footer>
-    </body>
+        <h1>Guess it!</h1>
+
+        <form id="game-form">
+            <label class="game-form__label" for="guess-input">
+                Guess a number between 0 and 100:
+            </label>
+
+            <input id="guess-input" type="number" pattern="\d+" min="0" max="100" required name="guessed-number">
+        </form>
+
+        <button id="btn--new-game" class="btn btn--success">
+            New game
+        </button>
+    </main>
+
+    <footer>
+        <p class="text-center">
+            Made by Zowie Beha
+        </p>
+        <p class="text-center">
+            Sounds by
+            <a href="https://freesound.org/people/Yoshicakes77/sounds/703543/" target="_blank">
+                Yoshicakes77
+            </a>
+            and
+            <a href="https://freesound.org/people/suntemple/sounds/253174/" target="_blank">
+                suntemple
+            </a>
+        </p>
+    </footer>
+</body>
+
 </html>
