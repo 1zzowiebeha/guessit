@@ -16,6 +16,12 @@ body {
 
 * {
     font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+    color: rgb(41, 41, 41);
+}
+
+*::selection {
+    color: white;
+    background: rgb(41, 41, 41);;
 }
 
 /* =======
@@ -25,6 +31,7 @@ Toast
 .toast {
     border-radius: 6px;
     padding: .5rem 1rem;
+    min-width: 10rem;
     border: 1px solid grey;
     box-shadow: 0px 0px 2px #00000059;
     line-height: 100%;
@@ -44,7 +51,8 @@ Toast
         gap: 1rem;
     }
 
-    .toast__button {
+    .btn--toast {
+        justify-self: end;
         padding: .5rem;
     }
 }
@@ -83,7 +91,7 @@ Buttons
     border-radius: 50%;
 
     /* fix the size of the button irregardless of its contents */
-    width: 3rem;
+    width: 2rem;
     aspect-ratio: 1 / 1;
 
     background:
@@ -123,8 +131,29 @@ Buttons
     }
 }
 
+/* =======
+New Popover Button Variables
+========== */
+
+@property --btn-linear-color1 {
+    syntax: '<color>';
+    initial-value: rgb(255, 255, 255);
+    inherits: false;
+}
+
+@property --btn-linear-color2 {
+    syntax: '<color>';
+    initial-value: rgb(228 228 228);
+    inherits: false;
+}
+
 #btn--new-popover {
-    
+    transition: 1s --btn-linear-color2, 1s --btn-linear-color1;
+    background: linear-gradient(var(--btn-linear-color1), var(--btn-linear-color2));
+    &:hover {
+        --btn-linear-color1: rgb(255, 255, 255);
+        --btn-linear-color2: rgb(210 210 210);
+    }
 }
 
 /* =======
