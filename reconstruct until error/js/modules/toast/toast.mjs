@@ -1,4 +1,4 @@
-import { generateUniqueID } from './helper_functions.mjs';
+import { generateUniqueID, isString } from './helper_functions.mjs';
 
 // Shared state, internal to this file
 // Would be better suited for a "Popover" class.
@@ -7,20 +7,11 @@ let visiblePopovers = [];
 let closeAnimatingPopovers = [];
 let closeAnimationCompletedPopovers = [];
 
-function isString(value) {
-    try {
-        return "".toString.call(value)===String(value)
-    }
-    catch(e) {// not a string
-        return false
-    }
-}
-
 /**
  * Add a new toast component to the DOM
  * and setup its functionality.
  */
-function createToast(message, toastModifierClass) {
+function createToast(message = "Sample Text", toastModifierClass = "") {
     if (!isString(message))
         throw new Error("message argument must be a string.")
     if (!isString(toastModifierClass))
@@ -122,8 +113,6 @@ function anchorPopover(currentPopoverElement) {
  * Garbage collect animated popovers once all animations have completed.
  */
 function closePopover(popoverElementArg) {  
-    debugger;
-    
     // We want to keep them around so that any dependencies for anchors
     //  don't disappear and cause parent popover anchors to break.
     closeAnimatingPopovers.push(popoverElementArg);
