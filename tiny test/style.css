@@ -24,7 +24,7 @@ Toast
 
 .toast {
     border-radius: 6px;
-    padding: 1rem;
+    padding: .5rem 1rem;
     border: 1px solid grey;
     box-shadow: 0px 0px 2px #00000059;
     line-height: 100%;

@@ -135,7 +135,6 @@ function reorderPopoverPositions() {
 }
 
 function closeToast(toastElement) {
-    debugger;
     popoverArray = arrayWithoutElement(toastElement, popoverArray);
                 
     toastElement.remove();

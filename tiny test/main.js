@@ -154,7 +154,6 @@ function closePopover(popoverElementArg) {
     // }, secondsUntilGarbageCollection);
     
     
-    
     popoverElementArg.addEventListener('animationend', (event) => {
         if (event.animationName == "toast-hide") {
             // Remove popover from those in the process of playing out
@@ -179,12 +178,17 @@ function closePopover(popoverElementArg) {
             
                 reorderPopovers();
                 
-                // If display is set to none (a product of hidePopover), then anchor-position no longer works,
-                //     ... and the element will appear in the top left corner of the page.
-                // Hide the popover only after we reorder visible popovers.
-                popoverElementArg.hidePopover();
-    
-                popoverElementArg.remove();
+                // Garbage collect hidden popovers
+                closeAnimationCompletedPopovers.map((hiddenPopoverElement) => {
+                    // Hide the popovers only after we reorder visible popovers.
+                    
+                    // If this logic occurs before, then the anchor positioning for the visible popovers will
+                    //  ... break, since popovers higher in the chain depend on ones lower in the DOM chain
+                    //  ... for positioning. The popovers above the removed popover will statically position
+                    //  ... in the corner of the page.
+                    hiddenPopoverElement.hidePopover();
+                    hiddenPopoverElement.remove();
+                })
                 
                 // Clear both arrays.
                 closingPopovers = [];
