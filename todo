@@ -23,6 +23,8 @@ compare diff between the successful reconstruction, static, and the tiny test
     
 ✅ fix ::before icon for success toast
 
+test on a mobile device
+
 ------
 read rest of modules page, import page, export page
 
