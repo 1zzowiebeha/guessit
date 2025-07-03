@@ -9,11 +9,19 @@
 ✅ Add in and out animations to popover
 
 ✅ Tweak popover colors to be darker in relation to win/loss screen colors
-Add underline to external link icon
+❌ Add underline to external link icon
+    Achieved but decided against
 
 ✅ Make new game button appear after win/loss condition
 ✅ Add visuals to win/loss condition
 ✅ Add audio to win/loss condition
+
+✅ timeout to automatically close popovers
+
+compare diff between the successful reconstruction, static, and the tiny test
+    maybe a logic error? idk
+    
+✅ fix ::before icon for success toast
 
 ------
 read rest of modules page, import page, export page
