@@ -31,12 +31,12 @@ body {
   padding: 1rem;
   height: 100vh;
   transition: 0.9s background;
-  overflow: hidden; /* hide notifications that animate outside of the body */
 }
 
 html {
   /* https://stackoverflow.com/a/7049918/12637568 */
   height: 100vh;
+  width: 100vw;
 }
 
 p {
@@ -124,6 +124,18 @@ New Game Button
 /* =======
 New Popover Button & its transition properties
 ========== */
+/* =======
+Popover container
+========== */
+/* Position popover container over all else. */
+#popover-container {
+  position: absolute;
+  width: 100vw;
+  height: 100vh;
+  z-index: 999;
+  overflow: hidden; /* hide popover content that animates outside of the html */
+}
+
 /* =======
 Toast
 ========== */
@@ -286,6 +298,11 @@ Page content
   font-size: 1em;
   height: 3em;
   transition: 0.3s border, 0.3s background;
+}
+@media screen and (max-width: 425px) {
+  #game-form {
+    grid: auto-flow/1fr;
+  }
 }
 
 /*# sourceMappingURL=index.css.map */

@@ -1,4 +1,5 @@
 @use "./base/base";
+@use "./base/base_variables";
 
 /* =======
 Page content
@@ -11,7 +12,7 @@ Page content
 
 #game-form {
     display: grid;
-    grid: 1fr / auto-flow;
+    grid: 1fr / auto-flow; // 1fr row, auto-flow column
     align-items: center;
     gap: 1rem;
 
@@ -21,5 +22,9 @@ Page content
         height: 3em;
 
         transition: .3s border, .3s background;
+    }
+    
+    @media screen and (max-width: base_variables.$small-breakpoint) {
+        grid: auto-flow / 1fr;
     }
 }

@@ -1,5 +1,19 @@
 
 /* =======
+Popover container
+========== */
+
+/* Position popover container over all else. */
+#popover-container {
+    position: absolute;
+    width: 100vw;
+    height: 100vh;
+    z-index: 999; // probably a poor practice?
+    
+    overflow: hidden; /* hide popover content that animates outside of the html */
+}
+
+/* =======
 Toast
 ========== */
 

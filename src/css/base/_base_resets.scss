@@ -33,16 +33,16 @@ body {
     padding: 1rem;
 
     height: 100vh;
+    // why is width 100vw?
 
     transition: .9s background;
-    
-    overflow: hidden; /* hide notifications that animate outside of the body */
 }
 
 
 html {
     /* https://stackoverflow.com/a/7049918/12637568 */
     height: 100vh;
+    width: 100vw;
 }
 
 p {
