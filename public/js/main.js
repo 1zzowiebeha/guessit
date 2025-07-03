@@ -1,3 +1,4 @@
+import { startNewGame, makeGuess } from "./modules/functions.mjs";
 ///////////////
 // Variables //
 ///////////////

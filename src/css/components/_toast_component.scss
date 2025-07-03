@@ -1,0 +1,137 @@
+
+/* =======
+Toast
+========== */
+
+.toast {
+    border-radius: 6px;
+    padding: .5rem 1rem;
+    min-width: 10rem;
+    border: 1px solid grey;
+    box-shadow: 0px 0px 2px #00000059;
+    line-height: 100%;
+
+    /* first toast is positioned absolutely to the bottom right of the screen */
+    position: absolute;
+    /* popovers set inset to 0, so we must reset top/left to auto */
+    inset: auto 1rem 1rem auto;
+    animation: toast-show .6s ease-in-out 1 forwards;
+    transition: .3s ease-out inset-block-end, .3s ease-out inset-inline-end;
+
+    /* if we mess with the popover element's display property, show and hide behavior will have indeterminate & non-functional behavior. use a wrapper to layout a popover's children: */
+    .grid-wrapper {
+        display: grid;
+        grid-auto-flow: column;
+        align-items: center;
+        gap: 1rem;
+    }
+
+    .btn--toast {
+        justify-self: end;
+        padding: .5rem;
+    }
+}
+
+.toast.closing {
+    animation: toast-hide 1s ease-in-out 1 forwards;
+}
+
+/* =======
+Toast modifiers
+========== */
+
+.toast--success {
+    border: 2px solid rgb(87, 137, 45);
+    background: rgb(184, 255, 184);
+    box-shadow: 0px 0px 2px #25773640;
+
+    overflow: hidden;
+    /* don't scroll to accomodate rotated ::before icon */
+
+    .grid-wrapper::before {
+        content: "";
+        z-index: -1;
+         /* display behind the text within the popover  */
+        left: 0rem;
+        height: 3rem;
+        aspect-ratio: 1 / 1;
+
+        background-color: rgb(71 175 71);;
+         /* svgs aren't 100% of height and width  */
+        mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cpath fill='%23000' d='M16 2a14 14 0 1 0 14 14A14 14 0 0 0 16 2m-2 19.59l-5-5L10.59 15L14 18.41L21.41 11l1.596 1.586Z'/%3E%3Cpath fill='none' d='m14 21.591l-5-5L10.591 15L14 18.409L21.41 11l1.595 1.585z'/%3E%3C/svg%3E");
+    }
+}
+
+.toast--danger {
+    border: 2px solid rgb(195, 56, 52);
+    background: rgb(255, 81, 81);
+    box-shadow: 0px 0px 2px #77252540;
+
+    overflow: hidden;
+    /* don't scroll to accomodate rotated ::before icon */
+
+    .grid-wrapper::before {
+        content: "";
+        z-index: -1;
+        /* display behind the text within the popover  */
+        left: 0rem;
+        height: 3rem;
+        aspect-ratio: 1 / 1;
+
+        background-color: rgb(215, 53, 53);
+        mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='%23c53a3a' d='M12 4c-4.42 0-8 3.58-8 8s3.58 8 8 8s8-3.58 8-8s-3.58-8-8-8m1 13h-2v-2h2zm0-4h-2V7h2z' opacity='0.3'/%3E%3Cpath fill='%23c53a3a' d='M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2M12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8s8 3.58 8 8s-3.58 8-8 8m-1-5h2v2h-2zm0-8h2v6h-2z'/%3E%3C/svg%3E");
+    }
+}
+
+.toast--neutral {
+    overflow: hidden;
+    /* don't scroll to accomodate rotated ::before icon */
+
+    .grid-wrapper::before {
+        content: "";
+        z-index: -1;
+        /* display behind the text within the popover  */
+        left: 0rem;
+        height: 3rem;
+        aspect-ratio: 1 / 1;
+
+        background-color: hsl(0, 0%, 66%);
+        mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='%23000' d='M12 4c-4.41 0-8 3.59-8 8s3.59 8 8 8s8-3.59 8-8s-3.59-8-8-8m1 13h-2v-6h2zm0-8h-2V7h2z' opacity='0.3'/%3E%3Cpath fill='%23000' d='M11 7h2v2h-2zm0 4h2v6h-2zm1-9C6.48 2 2 6.48 2 12s4.48 10 10 10s10-4.48 10-10S17.52 2 12 2m0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8s8 3.59 8 8s-3.59 8-8 8'/%3E%3C/svg%3E");
+    }
+}
+
+/* =======
+Notification animations
+========== */
+
+@keyframes toast-show {
+    from {
+        transform: translate(5rem, 3.5rem);
+    }
+    50% {
+        transform: translate(-1rem, -1rem);
+    }
+    75% {
+        transform: translate(.5rem, .5rem);
+    }
+    to {
+      
+        transform: translate(0, 0);
+    }
+}
+
+
+@keyframes toast-hide {
+    from {
+        transform: translate(0, 0);
+    }
+    50% {
+        transform: translate(-3rem, 0);
+    }
+    75% {
+        transform: translate(-3rem, 0);
+    }
+    to {
+        transform: translate(100vw, 0);
+    }
+}

@@ -1,0 +1,83 @@
+
+/* =======
+Buttons
+========== */
+
+.btn {
+    border: 1px solid grey;
+    padding: .5rem 1rem;
+    font-weight: 500;
+    border-radius: 6px;
+    cursor: pointer;
+    width: fit-content;
+    /* don't stretch via justify-self default if a grid child */
+
+    transition: .3s background;
+}
+
+.btn--success {
+    border: 1px solid rgb(31, 93, 38);
+    background: rgb(115, 193, 115);
+
+    &:hover {
+        background: rgb(100, 186, 100);
+    }
+}
+
+.btn--toast {
+    border: none;
+    border-radius: 50%;
+
+    /* fix the size of the button irregardless of its contents */
+    width: 2rem;
+    aspect-ratio: 1 / 1;
+
+    background:
+        no-repeat center / 50% 50% url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='none' stroke='white' stroke-linecap='round' stroke-width='2' d='M20 20L4 4m16 0L4 20'/%3E%3C/svg%3E");
+
+    background-color: rgb(43, 43, 43);
+
+    display: grid;
+    grid: 100% / 100%;
+    place-items: center;
+    /* why do the default grid tracks not fill to 100%? */
+
+    &:hover {
+        background-color: rgb(14, 13, 13);
+    }
+}
+
+/* =======
+New Game Button
+========== */
+
+#btn--new-game {
+    margin-top: 1rem;
+    justify-self: center;
+}
+
+/* =======
+New Popover Button & its transition properties
+========== */
+
+// Only used for debugging but it looks cool so I'll keep for future reference
+// @property --btn-linear-color1 {
+//     syntax: '<color>';
+//     initial-value: rgb(255, 255, 255);
+//     inherits: false;
+// }
+
+// @property --btn-linear-color2 {
+//     syntax: '<color>';
+//     initial-value: rgb(228 228 228);
+//     inherits: false;
+// }
+
+// #btn--new-popover {
+//     transition: 1s --btn-linear-color2, 1s --btn-linear-color1;
+//     background: linear-gradient(var(--btn-linear-color1), var(--btn-linear-color2));
+//     &:hover {
+//         --btn-linear-color1: rgb(255, 255, 255);
+//         --btn-linear-color2: rgb(210 210 210);
+//     }
+// }

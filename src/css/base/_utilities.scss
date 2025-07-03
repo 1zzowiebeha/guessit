@@ -1,0 +1,25 @@
+
+/* =======
+Utilities
+========== */
+
+.sr-only {
+    position: absolute;
+    left: -99999px;
+}
+
+.hidden {
+    display: none;
+}
+
+.text-center {
+    text-align: center;
+}
+
+.bg-success {
+    background: #45be5e;
+}
+
+.bg-danger {
+    background: #b85563;
+}

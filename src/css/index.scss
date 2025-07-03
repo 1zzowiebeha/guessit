@@ -1,0 +1,25 @@
+@use "./base/base";
+
+/* =======
+Page content
+========== */
+
+.main-content {
+    display: grid;
+    align-content: center;
+}
+
+#game-form {
+    display: grid;
+    grid: 1fr / auto-flow;
+    align-items: center;
+    gap: 1rem;
+
+    #guess-input {
+        padding: .5rem;
+        font-size: 1em;
+        height: 3em;
+
+        transition: .3s border, .3s background;
+    }
+}
