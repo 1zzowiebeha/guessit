@@ -1,10 +1,10 @@
 /**
- * Return the first 12 characters of a UUID as a string
+ * Return the first 17 characters of a UUID as a string
  */
 function generateUniqueID() {
     const uid = crypto.randomUUID();
     
-    return uid.slice(0, 12);
+    return uid.slice(0, 17);
 }
 
 function isString(value) {

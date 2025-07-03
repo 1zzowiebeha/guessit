@@ -1,10 +1,3 @@
-import { createToast } from './modules/toast/toast.mjs';
-import { makeGuess, startNewGame } from './modules/functions.mjs';
-
-const newPopoverButton = document.getElementById('btn--new-popover');
-newPopoverButton.addEventListener('click', () => createToast());
-
-
 ///////////////
 // Variables //
 ///////////////

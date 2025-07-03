@@ -1,5 +1,5 @@
 import { toastState } from "./enums.mjs";
-import { createToast } from './toast/toast.mjs'
+import { createToast, closeAllPopovers } from './toast/toast.mjs'
 import { MAX_ATTEMPTS_VALUE } from "./settings.mjs";
 
 //////////////////
@@ -45,6 +45,8 @@ function startNewGame(maxRandomValue) {
     
     guessInputElement.value = "";
     guessInputElement.focus();
+    
+    closeAllPopovers();
 }
 
 

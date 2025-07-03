@@ -6,6 +6,12 @@ import { generateUniqueID, isString } from './helper_functions.mjs';
 let visiblePopovers = [];
 let closeAnimatingPopovers = [];
 let closeAnimationCompletedPopovers = [];
+let autoTimeoutData = [];
+
+function isPopoverClosing(popoverElementArg) {
+    return closeAnimatingPopovers.includes(popoverElementArg)
+           || closeAnimationCompletedPopovers.includes(popoverElementArg);
+}
 
 /**
  * Add a new toast component to the DOM
@@ -66,6 +72,27 @@ function createToast(message = "Sample Text", toastModifierClass = "") {
     visiblePopovers.push(popoverElement);
     
     popoverElement.showPopover();
+    
+    console.warn("createToast():");
+    console.log({popoverElement});
+    console.log({visiblePopovers});
+    console.log({closeAnimatingPopovers});
+    console.log({closeAnimationCompletedPopovers});
+    
+    // Automatically close after 6 seconds.
+    // setTimeout is an asynchronous function!!!! that's why it's hard to debug
+    let timeoutID;
+    timeoutID = setTimeout(() => {        
+        console.warn("Auto close after 6 seconds. Popover not yet in close state:");
+        console.log({popoverElement});
+        console.log({visiblePopovers});
+        console.log({closeAnimatingPopovers});
+        console.log({closeAnimationCompletedPopovers});
+        
+        closePopover(popoverElement);
+    }, 6000)
+    
+    autoTimeoutData.push({timeoutID, popoverElement});
 }
 
 /**
@@ -113,12 +140,45 @@ function anchorPopover(currentPopoverElement) {
  * Garbage collect animated popovers once all animations have completed.
  */
 function closePopover(popoverElementArg) {  
+    // Don't mess up state by closing a popover twice.
+    // (This could occur if both closeAllPopovers() and a manual close invoke sequentially)
+    // (Or if an async task occurs right when closeAllPopovers() invokes closePopover()).
+    if( isPopoverClosing(popoverElementArg) )
+        return;
+    
+    const popoverElementAutoTimeoutData = autoTimeoutData.find(
+        (timeoutData) => timeoutData.popoverElement.id == popoverElementArg.id
+    );
+    
+    // If an auto-close is scheduled for this popover, cancel the task
+    // ... to avoid race conditions and duplicate data.
+    // (idk exactly why visible the visiblePopovers array would still have the popover.)
+    // (i'll need to think deeper about it)
+    if (popoverElementAutoTimeoutData !== undefined) {
+        clearTimeout(popoverElementAutoTimeoutData.timeoutID);
+        
+        // Remove cleared async task from the array
+        autoTimeoutData = autoTimeoutData.filter(
+            (timeoutData) => timeoutData !== popoverElementAutoTimeoutData
+        );
+    }
+    
+    console.log(popoverElementArg, " not found within closeAnimatingPopovers nor closeAnimationCompletedPopovers");
+    console.warn("closePopover(). Popover not yet in close state:");
+    console.log({popoverElementArg});
+    console.log({visiblePopovers});
+    console.log({closeAnimatingPopovers});
+    console.log({closeAnimationCompletedPopovers});
+            
     // We want to keep them around so that any dependencies for anchors
     //  don't disappear and cause parent popover anchors to break.
     closeAnimatingPopovers.push(popoverElementArg);
       
     // Play the closing animation
     popoverElementArg.classList.add("closing");
+    
+    // Somehow visible popovers aren't being removed from the array
+    // ... when I add popovers onto ones that are in the process of closing...
     
     popoverElementArg.addEventListener('animationend', (event) => {
         if (event.animationName == "toast-hide") {
@@ -162,6 +222,21 @@ function closePopover(popoverElementArg) {
     });
 }
 
+function closeAllPopovers() {
+    for (const popoverElement of visiblePopovers) {
+        // Cancel all async tasks to prevent race conditions & duplicate data
+        autoTimeoutData.map((timeoutData) => clearTimeout(timeoutData.timeoutID));
+        autoTimeoutData = []; // Clear timeout data
+        
+        console.warn("closeAllPopovers(). Popover not yet in close state:");
+        console.log({popoverElement});
+        console.log({visiblePopovers});
+        console.log({closeAnimatingPopovers});
+        console.log({closeAnimationCompletedPopovers});
+        closePopover(popoverElement);
+    }
+}
+
 /**
  * Reorder visible popovers to close gaps.
  */
@@ -202,4 +277,4 @@ function reorderVisiblePopovers() {
     }
 }
 
-export { createToast };
+export { createToast, closeAllPopovers };
